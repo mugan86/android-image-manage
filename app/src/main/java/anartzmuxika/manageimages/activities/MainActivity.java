@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
                 != PackageManager.PERMISSION_GRANTED && Build.VERSION.SDK_INT>=23) {
 
             requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    11);
+                    ConstantValues.GRANTED_ACCESS_STORAGE);
         }
     }
 
@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
                                     != PackageManager.PERMISSION_GRANTED && Build.VERSION.SDK_INT>=23) {
 
                                 requestPermissions(new String[]{Manifest.permission.CAMERA},
-                                        10);
+                                        ConstantValues.GRANTED_CAMERA);
                             }
                             else
                             {
@@ -182,11 +182,12 @@ public class MainActivity extends AppCompatActivity {
             @NonNull int[] res
     )
     {
-        if(rCode == 10 || rCode == 11) //Permission GRANTED to use camera / write external storage
+        if(rCode == ConstantValues.GRANTED_CAMERA || rCode == ConstantValues.GRANTED_ACCESS_STORAGE) //Permission GRANTED to use camera / write external storage
         {
             if (res[0] == PackageManager.PERMISSION_GRANTED)
             {
-                if (rCode == 10) openCamera(); else if (rCode == 11) System.out.println("Available!!!");
+                if (rCode == ConstantValues.GRANTED_CAMERA) openCamera();
+                else if (rCode == ConstantValues.GRANTED_ACCESS_STORAGE) System.out.println("Available!!!");
             }
             else
             {
