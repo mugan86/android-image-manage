@@ -13,6 +13,7 @@ import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -26,6 +27,7 @@ import java.io.File;
 import java.io.FileDescriptor;
 
 import anartzmuxika.manageimages.R;
+import anartzmuxika.manageimages.server.UploadPhoto;
 import anartzmuxika.manageimages.utils.ConstantValues;
 import anartzmuxika.manageimages.utils.DataPreferences;
 import anartzmuxika.manageimages.utils.Directory;
@@ -33,9 +35,7 @@ import anartzmuxika.manageimages.utils.Directory;
 public class MainActivity extends AppCompatActivity {
 
     private ImageView show_loadImageView;
-    private Button open_image_optionsButton;
-
-
+    private Button open_image_optionsButton, upload_imageButton;
     private File output;
     private String imagepath;
     private Uri imageUri;
@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
     {
         show_loadImageView = (ImageView) findViewById(R.id.show_loadImageView);
         open_image_optionsButton = (Button) findViewById(R.id.open_image_optionsButton);
+        upload_imageButton = (Button) findViewById(R.id.upload_imageButton);
     }
 
     private void addActions()
@@ -91,10 +92,13 @@ public class MainActivity extends AppCompatActivity {
 
                         //Open camera to capture image
                         if (options[item].equals("Camera")) {
-                            if (checkSelfPermission(Manifest.permission.CAMERA)
-                                    != PackageManager.PERMISSION_GRANTED && Build.VERSION.SDK_INT >= 23) {
 
-                                requestPermissions(new String[]{Manifest.permission.CAMERA},
+                            if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA)
+                                    != PackageManager.PERMISSION_GRANTED
+                                    && android.os.Build.VERSION.SDK_INT >= 23) {
+
+                                ActivityCompat.requestPermissions(MainActivity.this,
+                                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                                         ConstantValues.GRANTED_CAMERA);
                             } else {
                                 openCamera();
@@ -130,6 +134,14 @@ public class MainActivity extends AppCompatActivity {
                 builder.show();
             }
         });
+
+        upload_imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UploadPhoto upload_photo = new UploadPhoto(MainActivity.this);
+                upload_photo.execute(imagepath);
+            }
+        });
     }
 
     private void openCamera()
@@ -137,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
         Intent i=new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         File dir=
                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
-        output=new File(dir, "image.jpeg");
+        output=new File(dir, "image" + System.currentTimeMillis() + ".jpeg");
         i.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(output));
         startActivityForResult(i, ConstantValues.IMAGE_PICKER_CAMERA);
     }
@@ -152,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
                     MediaStore.Images.Media.INTERNAL_CONTENT_URI);
             File dir =
                     Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
-            output = new File(dir, "image.jpeg");
+            output = new File(dir, "image" + System.currentTimeMillis() + ".jpeg");
             intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(output));
             startActivityForResult(intent, ConstantValues.IMAGE_PICKER_SELECT);
         }
@@ -301,5 +313,4 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-
 }
