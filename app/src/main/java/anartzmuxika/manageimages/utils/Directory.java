@@ -1,14 +1,31 @@
 package anartzmuxika.manageimages.utils;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.graphics.Bitmap;
+import android.graphics.Matrix;
+import android.graphics.RectF;
 import android.net.Uri;
+import android.os.Build;
+import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 
-import anartzmuxika.manageimages.R;
+import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 /****************************************************
  * Created by Anartz Muxika on 23/3/16.
@@ -98,5 +115,160 @@ public class Directory {
         }
         return true;
     }
+
+    public static Bitmap resizeImage(Bitmap image, int w, int h) {
+
+        //Get image original width and height
+        int width = image.getWidth();
+        int height = image.getHeight();
+
+        //Android Note: Scale the bitmap and keep aspect ratio
+        RectF defaultRect = new RectF(0, 0, width, height);
+        RectF screenRect = new RectF(0, 0, w, h);
+
+        System.out.println ("Width: "+ width + " / "+ "Height: "+ height);
+
+        //Create a matrix for the manipulation
+        Matrix matrix = new Matrix();
+
+        //Resize the bit map
+        matrix.setRectToRect(defaultRect, screenRect, Matrix.ScaleToFit.CENTER);
+
+        //Recreate the new Bitmap after config changes
+        Bitmap resizedBitmap = Bitmap.createBitmap(image, 0, 0, width, height,
+                matrix, false);
+
+        System.out.println ("NEW---> Width"+ resizedBitmap.getWidth() + " / "+ "Height: "+ resizedBitmap.getHeight());
+        return resizedBitmap;
+
+    }
+
+
+    @SuppressLint("NewApi")
+    public static String getFilePath(final Context context, final Uri uri) {
+
+        // Google photo uri example
+        // content://com.google.android.apps.photos.contentprovider/0/1/mediakey%3A%2FAF1QipMObgoK_wDY66gu0QkMAi/ORIGINAL/NONE/114919
+
+        if ("content".equalsIgnoreCase(uri.getScheme())) {
+            String result = getDataColumn(context, uri, null, null); //
+            if (TextUtils.isEmpty(result))
+                if (uri.getAuthority().contains("com.google.android")) {
+                    try {
+                        File localFile = createImageFile(context, null);
+                        FileInputStream remoteFile = getSourceStream(context, uri);
+                        if(copyToFile(remoteFile, localFile))
+                            result = localFile.getAbsolutePath();
+                        remoteFile.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            return result;
+        }
+        // File
+        else if ("file".equalsIgnoreCase(uri.getScheme())) {
+            return uri.getPath();
+        }
+
+        return null;
+    }
+
+    /**
+     * Get the value of the data column for this Uri. This is useful for
+     * MediaStore Uris, and other file-based ContentProviders.
+     *
+     * @param context       The context.
+     * @param uri           The Uri to query.
+     * @param selection     (Optional) Filter used in the query.
+     * @param selectionArgs (Optional) Selection arguments used in the query.
+     * @return The value of the _data column, which is typically a file path.
+     */
+    static String getDataColumn(Context context, Uri uri, String selection,
+                                String[] selectionArgs) {
+
+        Cursor cursor = null;
+        final String column = "_data";
+        final String[] projection = {
+                column
+        };
+
+        try {
+            cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs,
+                    null);
+            if (cursor != null && cursor.moveToFirst()) {
+                final int column_index = cursor.getColumnIndexOrThrow(column);
+                return cursor.getString(column_index);
+            }
+        } finally {
+            if (cursor != null)
+                cursor.close();
+        }
+
+        return null;
+    }
+
+
+    /**
+     * Copy data from a source stream to destFile.
+     * Return true if succeed, return false if failed.
+     */
+    private static boolean copyToFile(InputStream inputStream, File destFile) {
+        if (inputStream == null || destFile == null) return false;
+        try {
+            OutputStream out = new FileOutputStream(destFile);
+            try {
+                byte[] buffer = new byte[4096];
+                int bytesRead;
+                while ((bytesRead = inputStream.read(buffer)) >= 0) {
+                    out.write(buffer, 0, bytesRead);
+                }
+            } finally {
+                out.close();
+            }
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    public static String getTimestamp() {
+        try {
+            return new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ROOT).format(new Date());
+        } catch (RuntimeException e) {
+            return new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+        }
+    }
+
+    public static File createImageFile(Context context, String imageFileName) throws IOException {
+        if (TextUtils.isEmpty(imageFileName))
+            imageFileName = getTimestamp(); // make random filename if you want.
+
+        final File root;
+        imageFileName = imageFileName;
+        root = context.getExternalCacheDir();
+
+        if (root != null && !root.exists())
+            root.mkdirs();
+        return new File(root, imageFileName);
+    }
+
+
+    public static FileInputStream getSourceStream(Context context, Uri u) throws FileNotFoundException {
+        FileInputStream out = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            ParcelFileDescriptor parcelFileDescriptor =
+                    context.getContentResolver().openFileDescriptor(u, "r");
+            FileDescriptor fileDescriptor = null;
+            if (parcelFileDescriptor != null) {
+                fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+                out = new FileInputStream(fileDescriptor);
+            }
+        } else {
+            out = (FileInputStream) context.getContentResolver().openInputStream(u);
+        }
+        return out;
+    }
+
 
 }

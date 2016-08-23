@@ -216,13 +216,20 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-
         if (requestCode == ConstantValues.IMAGE_PICKER_SELECT && resultCode == RESULT_OK) {
             imageUri = data.getData();
             if (Build.VERSION.SDK_INT < 19) {
 
-                String  selectedImagePath = Directory.convertDeviceURLToEmulateURL(data, MainActivity.this);
-                bitmap = BitmapFactory.decodeFile(selectedImagePath);
+                String  selectedImagePath = Directory.getFilePath(MainActivity.this, imageUri);//Directory.convertDeviceURLToEmulateURL(data, MainActivity.this);
+
+                System.out.println("Selected image path: " + selectedImagePath);
+
+                imagepath = selectedImagePath;
+
+                bitmap = Directory.resizeImage(BitmapFactory.decodeFile(selectedImagePath), 1024, 1024);
+                //bitmap = compressImage(1024, 1024, bitmap);
+                //bitmap = downloadImage(selectedImagePath, null);
+                //bitmap = BitmapFactory.decodeFile(selectedImagePath);
 
                 //Toast.makeText(getApplicationContext(), selectedImagePath, Toast.LENGTH_LONG).show();
 
@@ -250,6 +257,7 @@ public class MainActivity extends AppCompatActivity {
 
 
                     bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor);
+                    bitmap = Directory.resizeImage(bitmap, 1024, 1024);
 
                     int height = bitmap.getHeight();
                     int width = bitmap.getWidth();
@@ -309,6 +317,7 @@ public class MainActivity extends AppCompatActivity {
 
             System.out.println("IMAGE FROM CAMERA!!: " + imagepath);
             bitmap= BitmapFactory.decodeFile(imagepath);
+            bitmap = Directory.resizeImage(bitmap, 1024, 1024);
             show_loadImageView.setImageBitmap(bitmap);
         }
 
