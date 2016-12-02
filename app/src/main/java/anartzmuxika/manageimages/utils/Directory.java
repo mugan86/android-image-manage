@@ -10,11 +10,13 @@ import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
@@ -36,14 +38,14 @@ public class Directory {
 
     //Path to Android Build < 19
     public static String getPath(Uri uri, Context context) {
-        if( uri == null ) {
+        if (uri == null) {
             return null;
         }
         // try to retrieve the image from the media store first
         // this will only work for images selected from gallery
-        String[] projection = { MediaStore.Images.Media.DATA };
+        String[] projection = {MediaStore.Images.Media.DATA};
         Cursor cursor = context.getContentResolver().query(uri, projection, null, null, null);
-        if( cursor != null ){
+        if (cursor != null) {
             int column_index = cursor
                     .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             cursor.moveToFirst();
@@ -69,10 +71,10 @@ public class Directory {
      * Get url friendly to load in bitmap
      **********************************************************************************************/
 
-    public static String convertDeviceURLToEmulateURL(Intent data, Context context)
-    {
+    public static String convertDeviceURLToEmulateURL(Intent data, Context context) {
         Uri uri = data.getData();
-        String[] projection = { MediaStore.Images.Media.DATA };
+        System.out.println("URI: " + uri.toString());
+        String[] projection = {MediaStore.Images.Media.DATA};
 
         Cursor cursor = context.getContentResolver().query(uri, projection, null, null, null);
         cursor.moveToFirst();
@@ -85,65 +87,53 @@ public class Directory {
         return picturePath;
     }
 
+
     /**********************************************************************************************
      * Check image size
      */
 
-    public static boolean isCorrectImageSize(int width, int height)
-    {
+    public static boolean isCorrectImageSize(int width, int height) {
         if (height >= 4096 || width >= 4096) // Not support
         {
             System.out.println("Bitmap too large... (4096px)");
 
             String mezua;
 
-            if (height>=4096 && width>=4096)
-            {
+            if (height >= 4096 && width >= 4096) {
                 mezua = "Width and Height very big (4096px)";
-            }
-            else if (height>=4096)
-            {
+            } else if (height >= 4096) {
                 mezua = "Height very big (4096px)";
-            }
-            else
-            {
+            } else {
                 mezua = "Width very big (4096px)";
             }
 
-            //Utils.errorMessage(MainActivity.this, mezua);
+            //Utils.errorMessage(MountainPhotoGalleryFragment.this, mezua);
             return false;
         }
         return true;
     }
 
-    public static Bitmap resizeImage(Bitmap image, int w, int h) {
-
-        //Get image original width and height
-        int width = image.getWidth();
-        int height = image.getHeight();
-
-        //Android Note: Scale the bitmap and keep aspect ratio
-        RectF defaultRect = new RectF(0, 0, width, height);
-        RectF screenRect = new RectF(0, 0, w, h);
-
-        System.out.println ("Width: "+ width + " / "+ "Height: "+ height);
-
-        //Create a matrix for the manipulation
-        Matrix matrix = new Matrix();
-
-        //Resize the bit map
-        matrix.setRectToRect(defaultRect, screenRect, Matrix.ScaleToFit.CENTER);
-
-        //Recreate the new Bitmap after config changes
-        Bitmap resizedBitmap = Bitmap.createBitmap(image, 0, 0, width, height,
-                matrix, false);
-
-        System.out.println ("NEW---> Width"+ resizedBitmap.getWidth() + " / "+ "Height: "+ resizedBitmap.getHeight());
-        return resizedBitmap;
-
+    public static File savebitmap(Bitmap bmp) throws IOException {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        String image_url = (DateTime.getCurrentDataTime() + "_image.jpeg").replace(" ", "_").replace("-", "_").replace(":", "_");
+        bmp.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String pathname = Environment.getExternalStorageDirectory()
+                + File.separator + image_url;
+        File f = new File(pathname);
+        f.createNewFile();
+        FileOutputStream fo = new FileOutputStream(f);
+        fo.write(bytes.toByteArray());
+        fo.close();
+        return f;
     }
 
-
+    /*************************************
+     * Reference: http://stackoverflow.com/a/37770562
+     *
+     * @param context
+     * @param uri
+     * @return
+     */
     @SuppressLint("NewApi")
     public static String getFilePath(final Context context, final Uri uri) {
 
@@ -157,7 +147,7 @@ public class Directory {
                     try {
                         File localFile = createImageFile(context, null);
                         FileInputStream remoteFile = getSourceStream(context, uri);
-                        if(copyToFile(remoteFile, localFile))
+                        if (copyToFile(remoteFile, localFile))
                             result = localFile.getAbsolutePath();
                         remoteFile.close();
                     } catch (IOException e) {
@@ -270,5 +260,31 @@ public class Directory {
         return out;
     }
 
+    //Resize image to low size
+    public static Bitmap resizeImage(Bitmap image, int w, int h) {
 
+        //Get image original width and height
+        int width = image.getWidth();
+        int height = image.getHeight();
+
+        //Android Note: Scale the bitmap and keep aspect ratio
+        RectF defaultRect = new RectF(0, 0, width, height);
+        RectF screenRect = new RectF(0, 0, w, h);
+
+        System.out.println("Width: " + width + " / " + "Height: " + height);
+
+        //Create a matrix for the manipulation
+        Matrix matrix = new Matrix();
+
+        //Resize the bit map
+        matrix.setRectToRect(defaultRect, screenRect, Matrix.ScaleToFit.CENTER);
+
+        //Recreate the new Bitmap after config changes
+        Bitmap resizedBitmap = Bitmap.createBitmap(image, 0, 0, width, height,
+                matrix, false);
+
+        System.out.println("NEW---> Width" + resizedBitmap.getWidth() + " / " + "Height: " + resizedBitmap.getHeight());
+        return resizedBitmap;
+
+    }
 }
