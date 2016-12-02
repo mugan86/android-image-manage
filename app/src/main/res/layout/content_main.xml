@@ -4,17 +4,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent">
     <RelativeLayout
         android:layout_width="match_parent"
-<<<<<<< HEAD
-        android:layout_height="wrap_content" />
-    <Button
-        android:layout_marginTop="25sp"
-        android:text="Open Image options"
-        android:layout_below="@+id/open_image_optionsButton"
-        android:id="@+id/upload_imageButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-</RelativeLayout>
-=======
         android:layout_height="match_parent"
         android:paddingBottom="@dimen/activity_vertical_margin"
         android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -35,7 +24,14 @@
             android:id="@+id/open_image_optionsButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+        <Button
+            android:layout_marginTop="25sp"
+            android:text="Upload Image"
+            android:layout_below="@+id/open_image_optionsButton"
+            android:id="@+id/upload_imageButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
     </RelativeLayout>
 
 </ScrollView>
->>>>>>> 616de38cdda3746d9ec0c625685f4f8f0216db31
+
