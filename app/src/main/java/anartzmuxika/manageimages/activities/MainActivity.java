@@ -1,6 +1,7 @@
 package anartzmuxika.manageimages.activities;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -16,12 +17,12 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -36,16 +37,25 @@ public class MainActivity extends AppCompatActivity {
 
     private ImageView show_loadImageView;
     private Button open_image_optionsButton, upload_imageButton;
+
+    //Image manage values
     private File output;
-    private String imagepath;
+    private String imagepath, from;
     private Uri imageUri;
     private Bitmap bitmap;
+    private boolean upload_correct;
+    private Button upload_photoButton;
+
+    private Activity activity;
+
+
+    private File upload_file;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+
+        activity = MainActivity.this;
 
         initializeComponents();
 
@@ -70,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
         show_loadImageView = (ImageView) findViewById(R.id.show_loadImageView);
         open_image_optionsButton = (Button) findViewById(R.id.open_image_optionsButton);
         upload_imageButton = (Button) findViewById(R.id.upload_imageButton);
+        upload_imageButton.setVisibility(View.GONE);
     }
 
     private void addActions()
@@ -98,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
                                     && android.os.Build.VERSION.SDK_INT >= 23) {
 
                                 ActivityCompat.requestPermissions(MainActivity.this,
-                                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                        new String[]{Manifest.permission.CAMERA},
                                         ConstantValues.GRANTED_CAMERA);
                             } else {
                                 openCamera();
@@ -138,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
         upload_imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UploadPhoto upload_photo = new UploadPhoto(MainActivity.this);
+                UploadPhoto upload_photo = new UploadPhoto(MainActivity.this, upload_file);
                 upload_photo.execute(imagepath);
             }
         });
@@ -150,6 +161,8 @@ public class MainActivity extends AppCompatActivity {
         File dir=
                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
         output=new File(dir, "image" + System.currentTimeMillis() + ".jpeg");
+        System.out.println("OUTPUT CAMERA: " + output);
+        Toast.makeText(activity, "TEst camera", Toast.LENGTH_LONG).show();
         i.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(output));
         startActivityForResult(i, ConstantValues.IMAGE_PICKER_CAMERA);
     }
@@ -216,110 +229,162 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if (requestCode == ConstantValues.IMAGE_PICKER_SELECT && resultCode == RESULT_OK) {
-            imageUri = data.getData();
-            if (Build.VERSION.SDK_INT < 19) {
+        Toast.makeText(activity, "Request code: " + requestCode, Toast.LENGTH_LONG).show();
+        try
+        {
+            if (requestCode == ConstantValues.IMAGE_PICKER_SELECT) {
+                imageUri = data.getData();
+                if (Build.VERSION.SDK_INT < 19) {
 
-                String  selectedImagePath = Directory.getFilePath(MainActivity.this, imageUri);//Directory.convertDeviceURLToEmulateURL(data, MainActivity.this);
+                    String  selectedImagePath = Directory.getFilePath(MainActivity.this, imageUri);//Directory.convertDeviceURLToEmulateURL(data, activity);
+                    bitmap = BitmapFactory.decodeFile(selectedImagePath);
 
-                System.out.println("Selected image path: " + selectedImagePath);
+                /*bitmap = ImageManageUtils.compressImage(ConstantValues.MAX_WIDTH_HEIGHT_IMG,
+                        ConstantValues.MAX_WIDTH_HEIGHT_IMG, bitmap);*/
 
-                imagepath = selectedImagePath;
+                    bitmap = Directory.resizeImage(bitmap, ConstantValues.MAX_WIDTH_HEIGHT_IMG, ConstantValues.MAX_WIDTH_HEIGHT_IMG);
 
-                bitmap = Directory.resizeImage(BitmapFactory.decodeFile(selectedImagePath), 1024, 1024);
-                //bitmap = compressImage(1024, 1024, bitmap);
-                //bitmap = downloadImage(selectedImagePath, null);
-                //bitmap = BitmapFactory.decodeFile(selectedImagePath);
+                    int height = bitmap.getHeight();
+                    int width = bitmap.getWidth();
 
-                //Toast.makeText(getApplicationContext(), selectedImagePath, Toast.LENGTH_LONG).show();
+                    upload_file = Directory.savebitmap(bitmap);
 
-                int height = bitmap.getHeight();
-                int width = bitmap.getWidth();
+                    System.out.println("**** HEIGHT: " + height + " / " + "WIDTH: " + width + " output: " + output);
 
-                if(Directory.isCorrectImageSize(width, height))
-                {
-                    show_loadImageView.setImageBitmap(bitmap);
+                    if (Directory.isCorrectImageSize(width, height)) {
+                        //show_loadImageView.setImageBitmap(bitmap);
+                        selectedImagePath = selectedImagePath.replace("file://", "");
+                        selectedImagePath = selectedImagePath.replace("%20", " ");
 
-                    imagepath = selectedImagePath;
-                }
-                else
-                {
-                    //SHow error message...
-                }
-            }
-            else {
-                ParcelFileDescriptor parcelFileDescriptor;
-                try {
+                        imagepath = selectedImagePath;
 
+
+                        upload_correct = true;
+
+                        //sendImageToServer();
+                    } else {
+                        Toast.makeText(MainActivity.this, getResources().getString(R.string.image_no_take_correctly), Toast.LENGTH_LONG).show();
+                        upload_correct = false;
+
+                    }
+
+
+                } else {
+                    ParcelFileDescriptor parcelFileDescriptor;
 
                     parcelFileDescriptor = getContentResolver().openFileDescriptor(imageUri, "r");
                     FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
 
 
                     bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor);
-                    bitmap = Directory.resizeImage(bitmap, 1024, 1024);
+
+                /*bitmap = ImageManageUtils.compressImage(ConstantValues.MAX_WIDTH_HEIGHT_IMG,
+                        ConstantValues.MAX_WIDTH_HEIGHT_IMG, bitmap);*/
+
+                    bitmap = Directory.resizeImage(bitmap, ConstantValues.MAX_WIDTH_HEIGHT_IMG, ConstantValues.MAX_WIDTH_HEIGHT_IMG);
 
                     int height = bitmap.getHeight();
                     int width = bitmap.getWidth();
 
-                    if(Directory.isCorrectImageSize(width, height))
-                    {
+                    upload_file = Directory.savebitmap(bitmap);
+
+                    System.out.println("**** HEIGHT: " + height + " / " + "WIDTH: " + width + " output: " + output);
+
+                    if (Directory.isCorrectImageSize(width, height)) {
                         String picturePath = Directory.convertDeviceURLToEmulateURL(data, MainActivity.this);
+                        picturePath = picturePath.replace("file://", "");
+                        picturePath = picturePath.replace("%20", " ");
+
                         //Add bitmap in profile image
-                        show_loadImageView.setImageBitmap(bitmap);
+                        //show_loadImageView.setImageBitmap(bitmap);
                         System.out.println("URL: " + imageUri);
                         //Toast.makeText(getApplicationContext(), "URL: " + imageUri, Toast.LENGTH_LONG).show();
                         System.out.println("URL (After convert): " + picturePath);
                         //Toast.makeText(getApplicationContext(), "URL (After convert): " + picturePath, Toast.LENGTH_LONG).show();
 
 
+                        if (imageUri.toString().contains(ConstantValues.CONTENT_MEDIA)) {
 
-                        String [] propertyName = {"Local_Reference"};
-                        String [] propertyValue = {picturePath};
+                            System.out.println(Directory.getRealPathFromURI(imageUri, activity));
 
-                        DataPreferences.setPreference(getApplicationContext(), propertyName, propertyValue);
+                            imagepath = Directory.getRealPathFromURI(imageUri, activity);
 
-                        if (imageUri.toString().contains("content://media/"))
-                        {
-
-                            System.out.println(Directory.getRealPathFromURI(imageUri, MainActivity.this));
-
-                            imagepath = Directory.getRealPathFromURI(imageUri, MainActivity.this);
-
-                            imageUri = Uri.fromFile(output);
-                        }
-                        else if (imageUri.toString().contains("content://com.google.android.apps.photos.contentprovider"))
-                        {
+                            //imageUri = Uri.fromFile(output);
+                        } else if (imageUri.toString().contains(ConstantValues.CONTENT_PROVIDER)) {
                             imagepath = picturePath;
-                        }
-                        else
-                        {
+                        } else {
                             imagepath = imageUri.getPath();
                         }
-                    }
-                    else
-                    {
-                        //SHow error message...
+
+                        upload_correct = true;
+
+                    } else {
+                        Toast.makeText(activity, activity.getResources().getString(R.string.image_no_take_correctly), Toast.LENGTH_LONG).show();
+                        upload_correct = false;
                     }
 
                 }
-                catch (Exception e) {
-                    e.printStackTrace();
-                }
+
+
+
+
             }
+            else if (requestCode == ConstantValues.IMAGE_PICKER_CAMERA) {
 
+                imageUri = Uri.fromFile(output);
+
+                System.out.println(output + " ////// * " + output.getAbsolutePath());
+
+                //imagepath = imageUri.toString().substring(7);
+
+                /*imagepath = output.getAbsolutePath();
+
+                imagemanage.setImagepath(imagepath);*/
+                imagepath = imageUri.toString().substring(7);
+
+                System.out.println("IMAGE FROM CAMERA!!: " + imagepath);
+
+                System.out.println("IMAGE FROM CAMERA!!: " + imagepath);
+                bitmap= BitmapFactory.decodeFile(imagepath);
+            /*bitmap = ImageManageUtils.compressImage(ConstantValues.MAX_WIDTH_HEIGHT_IMG,
+                        ConstantValues.MAX_WIDTH_HEIGHT_IMG, bitmap);*/
+
+                bitmap = Directory.resizeImage(bitmap, ConstantValues.MAX_WIDTH_HEIGHT_IMG, ConstantValues.MAX_WIDTH_HEIGHT_IMG);
+
+                int height = bitmap.getHeight();
+                int width = bitmap.getWidth();
+
+                File file = Directory.savebitmap(bitmap);
+
+                System.out.println("**** HEIGHT: " + height + " / " + "WIDTH: " + width + " output: " + output);
+
+                if(Directory.isCorrectImageSize(width, height))
+                {
+                    //show_loadImageView.setImageBitmap(bitmap);
+                    //sendImageToServer();
+                    upload_correct = true;
+                }
+                else
+                {
+                    Toast.makeText(activity.getApplicationContext(), activity.getResources().getString(R.string.image_no_take_correctly), Toast.LENGTH_LONG).show();
+                    upload_correct = false;
+                }
+
+                //setInfo_add_imageTextView(uploadCorrect());
+
+            }
         }
-        else if (requestCode == ConstantValues.IMAGE_PICKER_CAMERA && resultCode == RESULT_OK) {
-
-            imageUri = Uri.fromFile(output);
-
-            imagepath = imageUri.toString().substring(7);
-
-            System.out.println("IMAGE FROM CAMERA!!: " + imagepath);
-            bitmap= BitmapFactory.decodeFile(imagepath);
-            bitmap = Directory.resizeImage(bitmap, 1024, 1024);
-            show_loadImageView.setImageBitmap(bitmap);
+        catch(Exception e)
+        {
+            //Toast.makeText(activity, activity.getResources().getString(R.string.image_no_take_correctly) , Toast.LENGTH_LONG).show();
+            //setInfo_add_imageTextView(false);
+            e.printStackTrace();
         }
+
+        show_loadImageView.setImageBitmap(bitmap);
+
+        if (bitmap != null) upload_imageButton.setVisibility(View.VISIBLE);
+        else upload_imageButton.setVisibility(View.GONE);
 
     }
 }
