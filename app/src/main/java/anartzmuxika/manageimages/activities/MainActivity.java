@@ -249,6 +249,7 @@ public class MainActivity extends AppCompatActivity {
 
                     upload_file = Directory.savebitmap(bitmap);
 
+
                     System.out.println("**** HEIGHT: " + height + " / " + "WIDTH: " + width + " output: " + output);
 
                     if (Directory.isCorrectImageSize(width, height)) {
@@ -354,7 +355,7 @@ public class MainActivity extends AppCompatActivity {
                 int height = bitmap.getHeight();
                 int width = bitmap.getWidth();
 
-                File file = Directory.savebitmap(bitmap);
+                upload_file = Directory.savebitmap(bitmap);
 
                 System.out.println("**** HEIGHT: " + height + " / " + "WIDTH: " + width + " output: " + output);
 
