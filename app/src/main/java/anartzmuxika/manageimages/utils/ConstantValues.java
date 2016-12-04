@@ -10,6 +10,8 @@ public class ConstantValues {
     public static final int IMAGE_PICKER_CAMERA = 198;
     public static final int IMAGE_PICKER_SELECT = 199;
 
+    public static final int RESULT_CODE_OK_VALID = -1;
+
     //Permission Manage Request Codes
 
     public static final int GRANTED_CAMERA = 10;
