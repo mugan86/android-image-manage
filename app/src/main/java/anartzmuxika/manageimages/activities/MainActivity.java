@@ -162,7 +162,6 @@ public class MainActivity extends AppCompatActivity {
                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
         output=new File(dir, "image" + System.currentTimeMillis() + ".jpeg");
         System.out.println("OUTPUT CAMERA: " + output);
-        Toast.makeText(activity, "TEst camera", Toast.LENGTH_LONG).show();
         i.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(output));
         startActivityForResult(i, ConstantValues.IMAGE_PICKER_CAMERA);
     }
@@ -206,41 +205,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(
-            int rCode,
-            @NonNull String [] permissions,
-            @NonNull int[] res
-    )
-    {
-        if(rCode == ConstantValues.GRANTED_CAMERA || rCode == ConstantValues.GRANTED_ACCESS_STORAGE) //Permission GRANTED to use camera / write external storage
-        {
-            if (res[0] == PackageManager.PERMISSION_GRANTED)
-            {
-                if (rCode == ConstantValues.GRANTED_CAMERA) openCamera();
-                else if (rCode == ConstantValues.GRANTED_ACCESS_STORAGE) System.out.println("Available!!!");
-            }
-            else
-            {
-
-            }
-        }
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        Toast.makeText(activity, "Request code: " + requestCode, Toast.LENGTH_LONG).show();
         try
         {
-            if (requestCode == ConstantValues.IMAGE_PICKER_SELECT) {
+            if (requestCode == ConstantValues.IMAGE_PICKER_SELECT && resultCode == ConstantValues.RESULT_CODE_OK_VALID) {
                 imageUri = data.getData();
                 if (Build.VERSION.SDK_INT < 19) {
 
                     String  selectedImagePath = Directory.getFilePath(MainActivity.this, imageUri);//Directory.convertDeviceURLToEmulateURL(data, activity);
                     bitmap = BitmapFactory.decodeFile(selectedImagePath);
-
-                /*bitmap = ImageManageUtils.compressImage(ConstantValues.MAX_WIDTH_HEIGHT_IMG,
-                        ConstantValues.MAX_WIDTH_HEIGHT_IMG, bitmap);*/
 
                     bitmap = Directory.resizeImage(bitmap, ConstantValues.MAX_WIDTH_HEIGHT_IMG, ConstantValues.MAX_WIDTH_HEIGHT_IMG);
 
@@ -253,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
                     System.out.println("**** HEIGHT: " + height + " / " + "WIDTH: " + width + " output: " + output);
 
                     if (Directory.isCorrectImageSize(width, height)) {
-                        //show_loadImageView.setImageBitmap(bitmap);
+
                         selectedImagePath = selectedImagePath.replace("file://", "");
                         selectedImagePath = selectedImagePath.replace("%20", " ");
 
@@ -278,9 +252,6 @@ public class MainActivity extends AppCompatActivity {
 
 
                     bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor);
-
-                /*bitmap = ImageManageUtils.compressImage(ConstantValues.MAX_WIDTH_HEIGHT_IMG,
-                        ConstantValues.MAX_WIDTH_HEIGHT_IMG, bitmap);*/
 
                     bitmap = Directory.resizeImage(bitmap, ConstantValues.MAX_WIDTH_HEIGHT_IMG, ConstantValues.MAX_WIDTH_HEIGHT_IMG);
 
@@ -326,26 +297,17 @@ public class MainActivity extends AppCompatActivity {
 
                 }
 
-
-
-
             }
-            else if (requestCode == ConstantValues.IMAGE_PICKER_CAMERA) {
+            else if (requestCode == ConstantValues.IMAGE_PICKER_CAMERA && resultCode == ConstantValues.RESULT_CODE_OK_VALID) {
 
                 imageUri = Uri.fromFile(output);
 
                 System.out.println(output + " ////// * " + output.getAbsolutePath());
 
-                //imagepath = imageUri.toString().substring(7);
-
-                /*imagepath = output.getAbsolutePath();
-
-                imagemanage.setImagepath(imagepath);*/
                 imagepath = imageUri.toString().substring(7);
 
                 System.out.println("IMAGE FROM CAMERA!!: " + imagepath);
 
-                System.out.println("IMAGE FROM CAMERA!!: " + imagepath);
                 bitmap= BitmapFactory.decodeFile(imagepath);
             /*bitmap = ImageManageUtils.compressImage(ConstantValues.MAX_WIDTH_HEIGHT_IMG,
                         ConstantValues.MAX_WIDTH_HEIGHT_IMG, bitmap);*/
@@ -371,14 +333,11 @@ public class MainActivity extends AppCompatActivity {
                     upload_correct = false;
                 }
 
-                //setInfo_add_imageTextView(uploadCorrect());
 
             }
         }
         catch(Exception e)
         {
-            //Toast.makeText(activity, activity.getResources().getString(R.string.image_no_take_correctly) , Toast.LENGTH_LONG).show();
-            //setInfo_add_imageTextView(false);
             e.printStackTrace();
         }
 
@@ -387,5 +346,26 @@ public class MainActivity extends AppCompatActivity {
         if (bitmap != null) upload_imageButton.setVisibility(View.VISIBLE);
         else upload_imageButton.setVisibility(View.GONE);
 
+    }
+
+    @Override
+    public void onRequestPermissionsResult(
+            int rCode,
+            @NonNull String [] permissions,
+            @NonNull int[] res
+    )
+    {
+        if(rCode == ConstantValues.GRANTED_CAMERA || rCode == ConstantValues.GRANTED_ACCESS_STORAGE) //Permission GRANTED to use camera / write external storage
+        {
+            if (res[0] == PackageManager.PERMISSION_GRANTED)
+            {
+                if (rCode == ConstantValues.GRANTED_CAMERA) openCamera();
+                else System.out.println("Available!!!");
+            }
+            else
+            {
+
+            }
+        }
     }
 }
