@@ -24,6 +24,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
+
 import java.io.File;
 import java.io.FileDescriptor;
 
@@ -50,6 +53,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     private File upload_file;
+
+    FloatingActionMenu materialDesignFAM;
+    FloatingActionButton floatingActionButton1, floatingActionButton2, floatingActionButton3;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,6 +87,11 @@ public class MainActivity extends AppCompatActivity {
         open_image_optionsButton = (Button) findViewById(R.id.open_image_optionsButton);
         upload_imageButton = (Button) findViewById(R.id.upload_imageButton);
         upload_imageButton.setVisibility(View.GONE);
+
+        materialDesignFAM = (FloatingActionMenu) findViewById(R.id.material_design_android_floating_action_menu);
+        floatingActionButton1 = (FloatingActionButton) findViewById(R.id.material_design_floating_action_menu_item1);
+        floatingActionButton2 = (FloatingActionButton) findViewById(R.id.material_design_floating_action_menu_item2);
+        floatingActionButton3 = (FloatingActionButton) findViewById(R.id.material_design_floating_action_menu_item3);
     }
 
     private void addActions()
@@ -151,6 +162,28 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 UploadPhoto upload_photo = new UploadPhoto(MainActivity.this, upload_file);
                 upload_photo.execute(imagepath);
+            }
+        });
+
+        floatingActionButton1.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "Open Device Camera??", Toast.LENGTH_LONG).show();
+                materialDesignFAM.close(true);
+
+            }
+        });
+        floatingActionButton2.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                Toast.makeText(getApplicationContext(), "Open Device Gallery??", Toast.LENGTH_LONG).show();
+                materialDesignFAM.close(true);
+            }
+        });
+        floatingActionButton3.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                //TODO something when floating action menu third item clicked
+                sendEmail("Contact with Anartz!");
+                materialDesignFAM.close(true);
             }
         });
     }
@@ -367,5 +400,13 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }
+    }
+
+    private void sendEmail(String subject) {
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setData(Uri.parse("mailto:")); // only email apps should handle this
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"mugan86@gmail.com"});
+        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+        if (intent.resolveActivity(getPackageManager()) != null) { startActivity(intent);}
     }
 }
