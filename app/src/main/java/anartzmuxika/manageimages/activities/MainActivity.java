@@ -68,16 +68,25 @@ public class MainActivity extends AppCompatActivity {
         addActions();
 
         //Only use in Android M
-        if (Build.VERSION.SDK_INT >= 23) openPermissionToReadStorage();
+        if (Build.VERSION.SDK_INT >= 23)
+        {
+            checkIfPermissionToReadStorage();
+            checkIfPermissionsToManageCamera();
+        }
+
     }
 
-    private void openPermissionToReadStorage()
+    private void checkIfPermissionToReadStorage()
     {
         if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED && Build.VERSION.SDK_INT>=23) {
 
             requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     ConstantValues.GRANTED_ACCESS_STORAGE);
+        }
+        else
+        {
+            openDeviceGallery();
         }
     }
 
@@ -115,16 +124,7 @@ public class MainActivity extends AppCompatActivity {
                         //Open camera to capture image
                         if (options[item].equals("Camera")) {
 
-                            if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA)
-                                    != PackageManager.PERMISSION_GRANTED
-                                    && android.os.Build.VERSION.SDK_INT >= 23) {
-
-                                ActivityCompat.requestPermissions(MainActivity.this,
-                                        new String[]{Manifest.permission.CAMERA},
-                                        ConstantValues.GRANTED_CAMERA);
-                            } else {
-                                openCamera();
-                            }
+                            checkIfPermissionsToManageCamera();
 
                         } else if (options[item].equals("Open Storage file reference")) {
 
@@ -137,14 +137,14 @@ public class MainActivity extends AppCompatActivity {
                             }
                             else
                             {
-                                openDeviceGallery();
+                                checkIfPermissionToReadStorage();
                             }
                         }
 
                         //Get image from gallery
                         else if (options[item].equals("Device (Gallery)"))
                         {
-                            openDeviceGallery();
+                            checkIfPermissionToReadStorage();
                         }
 
                         //Exit dialog
@@ -167,21 +167,19 @@ public class MainActivity extends AppCompatActivity {
 
         floatingActionButton1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Open Device Camera??", Toast.LENGTH_LONG).show();
+                checkIfPermissionsToManageCamera();
                 materialDesignFAM.close(true);
 
             }
         });
         floatingActionButton2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
-                Toast.makeText(getApplicationContext(), "Open Device Gallery??", Toast.LENGTH_LONG).show();
+                checkIfPermissionToReadStorage();
                 materialDesignFAM.close(true);
             }
         });
         floatingActionButton3.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                //TODO something when floating action menu third item clicked
                 sendEmail("Contact with Anartz!");
                 materialDesignFAM.close(true);
             }
@@ -390,15 +388,36 @@ public class MainActivity extends AppCompatActivity {
     {
         if(rCode == ConstantValues.GRANTED_CAMERA || rCode == ConstantValues.GRANTED_ACCESS_STORAGE) //Permission GRANTED to use camera / write external storage
         {
-            if (res[0] == PackageManager.PERMISSION_GRANTED)
-            {
-                if (rCode == ConstantValues.GRANTED_CAMERA) openCamera();
-                else System.out.println("Available!!!");
+            try {
+                if (res[0] == PackageManager.PERMISSION_GRANTED)
+                {
+                    if (rCode == ConstantValues.GRANTED_CAMERA) openCamera();
+                    else System.out.println("Available!!!");
+                }
+                else
+                {
+
+                }
             }
-            else
+            catch (Exception e)
             {
 
             }
+
+        }
+    }
+
+    private void checkIfPermissionsToManageCamera()
+    {
+        if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED
+                && android.os.Build.VERSION.SDK_INT >= 23) {
+
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{Manifest.permission.CAMERA},
+                    ConstantValues.GRANTED_CAMERA);
+        } else {
+            openCamera();
         }
     }
 
