@@ -10,6 +10,8 @@ android {
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
+        // Enabling multidex support.
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -27,4 +29,5 @@ dependencies {
 
     //Floating action Menu
     compile 'com.github.clans:fab:1.6.2'
+    compile 'com.android.support:multidex:1.0.1'
 }
