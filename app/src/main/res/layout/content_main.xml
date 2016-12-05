@@ -83,14 +83,16 @@
 
             <com.github.clans.fab.FloatingActionButton
                 android:id="@+id/material_design_floating_action_menu_item1"
-                fab:fab_size="mini"
+                fab:fab_size="normal"
+                fab:fab_label="Take photo!"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@android:drawable/ic_menu_camera" />
 
             <com.github.clans.fab.FloatingActionButton
                 android:id="@+id/material_design_floating_action_menu_item2"
-                fab:fab_size="mini"
+                fab:fab_size="normal"
+                fab:fab_label="Open Image from Device Gallery!"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@android:drawable/ic_menu_gallery" />
@@ -98,7 +100,7 @@
             <com.github.clans.fab.FloatingActionButton
                 android:id="@+id/material_design_floating_action_menu_item3"
                 fab:fab_size="normal"
-                app:fab_label="Test"
+                fab:fab_label="Send email!"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@android:drawable/ic_dialog_email" />
