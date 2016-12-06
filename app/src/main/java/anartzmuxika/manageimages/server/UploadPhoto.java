@@ -19,7 +19,7 @@ public class UploadPhoto extends AsyncTask<String, Integer, Boolean> {
     private File file;
     private ProgressDialog progressDialog;
 
-    public UploadPhoto(Context context, File file) { this.context = context; this.file = file;}
+    public UploadPhoto(Context context, File file) { this.context = context; this.file = file; System.out.println(file.getAbsolutePath());}
 
     @Override
     protected Boolean doInBackground(String... params) {
@@ -66,31 +66,45 @@ public class UploadPhoto extends AsyncTask<String, Integer, Boolean> {
 
     private int uploadFile(final String selectedFilePath){
 
-        UploadUtility upload = new UploadUtility(file, selectedFilePath, context, new FileUploadListener() {
-            @Override
-            public void onUpdateProgress(final int percentage, final long kb) {
-                ((Activity)context).runOnUiThread(new Runnable() {
+        try
+        {
+            UploadUtility upload = new UploadUtility(Urls.URL_LOCALHOST_LOCAL, new FileUploadListener() {
+                @Override
+                public void onUpdateProgress(final int percentage, final long kb) {
+                    ((Activity)context).runOnUiThread(new Runnable() {
 
-                    @Override
-                    public void run() {
-                        //  your progress code
-                        System.out.println("% " + percentage + " / " + kb + "(size)");
-                        //progressDialog.setMessage(context.getResources().getString(R.string.download_image_data_progress) + " (" + percentage + " %)");
-                        progressDialog.setProgress(percentage);
+                        @Override
+                        public void run() {
+                            //  your progress code
+                            System.out.println("% " + percentage + " / " + kb + "(size)");
+                            //progressDialog.setMessage(context.getResources().getString(R.string.download_image_data_progress) + " (" + percentage + " %)");
+                            progressDialog.setProgress(percentage);
 
-                    }});
-            }
+                        }});
+                }
 
-            @Override
-            public boolean isCanceled() {
-                return false;
-            }
+                @Override
+                public boolean isCanceled() {
+                    return false;
+                }
 
-            @Override
-            public void transferred(long num, long max) {
+                @Override
+                public void transferred(long num, long max) {
 
-            }
-        });
-        return upload.up();
+                }
+            });
+            upload.addFilePart("uploaded_file", file);
+            //upload.addFormField("mountainid", params[1]);
+            //multipart.addFormField("userid", id);
+
+            boolean result = upload.finish();
+            if (result) return 1;
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        return 0;
     }
 }
