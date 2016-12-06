@@ -67,27 +67,18 @@ public class MainActivity extends AppCompatActivity {
 
         addActions();
 
-        //Only use in Android M
-        if (Build.VERSION.SDK_INT >= 23)
-        {
-            checkIfPermissionToReadStorage();
-            checkIfPermissionsToManageCamera();
-        }
-
     }
 
-    private void checkIfPermissionToReadStorage()
+    private boolean checkIfPermissionToReadStorage()
     {
         if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED && Build.VERSION.SDK_INT>=23) {
 
             requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     ConstantValues.GRANTED_ACCESS_STORAGE);
+            return false;
         }
-        else
-        {
-            openDeviceGallery();
-        }
+        return true;
     }
 
     private void initializeComponents()
@@ -124,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
                         //Open camera to capture image
                         if (options[item].equals("Camera")) {
 
-                            checkIfPermissionsToManageCamera();
+                            if (checkIfPermissionsToManageCamera()) openCamera();
 
                         } else if (options[item].equals("Open Storage file reference")) {
 
@@ -137,14 +128,14 @@ public class MainActivity extends AppCompatActivity {
                             }
                             else
                             {
-                                checkIfPermissionToReadStorage();
+                                if (checkIfPermissionToReadStorage()) openDeviceGallery();
                             }
                         }
 
                         //Get image from gallery
                         else if (options[item].equals("Device (Gallery)"))
                         {
-                            checkIfPermissionToReadStorage();
+                            if (checkIfPermissionToReadStorage()) openDeviceGallery();
                         }
 
                         //Exit dialog
@@ -167,14 +158,14 @@ public class MainActivity extends AppCompatActivity {
 
         floatingActionButton1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                checkIfPermissionsToManageCamera();
+                if (checkIfPermissionsToManageCamera()) openCamera();
                 materialDesignFAM.close(true);
 
             }
         });
         floatingActionButton2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                checkIfPermissionToReadStorage();
+                if (checkIfPermissionToReadStorage()) openDeviceGallery();
                 materialDesignFAM.close(true);
             }
         });
@@ -274,13 +265,13 @@ public class MainActivity extends AppCompatActivity {
 
                     }
 
-
                 } else {
                     ParcelFileDescriptor parcelFileDescriptor;
 
                     parcelFileDescriptor = getContentResolver().openFileDescriptor(imageUri, "r");
                     FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
 
+                    System.out.println("IMAGEURI: " + imageUri.toString());
 
                     bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor);
 
@@ -291,33 +282,44 @@ public class MainActivity extends AppCompatActivity {
 
                     upload_file = Directory.savebitmap(bitmap);
 
-                    System.out.println("**** HEIGHT: " + height + " / " + "WIDTH: " + width + " output: " + output);
+                    System.out.println("**** HEIGHT: " + height + " / " + "WIDTH: " + width + " output: " + output.getAbsolutePath());
 
                     if (Directory.isCorrectImageSize(width, height)) {
-                        String picturePath = Directory.convertDeviceURLToEmulateURL(data, MainActivity.this);
-                        picturePath = picturePath.replace("file://", "");
-                        picturePath = picturePath.replace("%20", " ");
+                        String picturePath = "";
+                        try
+                        {
+                            picturePath = Directory.convertDeviceURLToEmulateURL(data, MainActivity.this);
+                            System.out.println("Picture path: " + picturePath);
+
+                            picturePath = picturePath.replace("file://", "");
+                            picturePath = picturePath.replace("%20", " ");
+                        }
+                        catch(Exception e)
+                        {
+                            picturePath = output.getAbsolutePath();
+                        }
 
                         //Add bitmap in profile image
                         //show_loadImageView.setImageBitmap(bitmap);
                         System.out.println("URL: " + imageUri);
-                        //Toast.makeText(getApplicationContext(), "URL: " + imageUri, Toast.LENGTH_LONG).show();
                         System.out.println("URL (After convert): " + picturePath);
-                        //Toast.makeText(getApplicationContext(), "URL (After convert): " + picturePath, Toast.LENGTH_LONG).show();
-
 
                         if (imageUri.toString().contains(ConstantValues.CONTENT_MEDIA)) {
 
-                            System.out.println(Directory.getRealPathFromURI(imageUri, activity));
+                            System.out.println("CONTENT MEDIA: " + Directory.getRealPathFromURI(imageUri, activity));
 
                             imagepath = Directory.getRealPathFromURI(imageUri, activity);
 
                             //imageUri = Uri.fromFile(output);
-                        } else if (imageUri.toString().contains(ConstantValues.CONTENT_PROVIDER)) {
+                        } else if (imageUri.toString().contains(ConstantValues.CONTENT_PROVIDER) &&
+                                (!imageUri.toString().contains("mediakey:/local") && (!imageUri.toString().contains("mediakey%3A%2Flocal")))) {
                             imagepath = picturePath;
+                            System.out.println("CONTENT PROVIDER: " + picturePath);
                         } else {
-                            imagepath = imageUri.getPath();
+                            imagepath = Directory.getFilePath(activity, imageUri);
                         }
+
+                        System.out.println("Absolute path: " + imagepath);
 
                         upload_correct = true;
 
@@ -392,11 +394,8 @@ public class MainActivity extends AppCompatActivity {
                 if (res[0] == PackageManager.PERMISSION_GRANTED)
                 {
                     if (rCode == ConstantValues.GRANTED_CAMERA) openCamera();
+                    if (rCode == ConstantValues.GRANTED_ACCESS_STORAGE) openDeviceGallery();
                     else System.out.println("Available!!!");
-                }
-                else
-                {
-
                 }
             }
             catch (Exception e)
@@ -407,7 +406,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void checkIfPermissionsToManageCamera()
+    private boolean checkIfPermissionsToManageCamera()
     {
         if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED
@@ -416,15 +415,15 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(MainActivity.this,
                     new String[]{Manifest.permission.CAMERA},
                     ConstantValues.GRANTED_CAMERA);
-        } else {
-            openCamera();
+            return false;
         }
+        return true;
     }
 
     private void sendEmail(String subject) {
         Intent intent = new Intent(Intent.ACTION_SENDTO);
         intent.setData(Uri.parse("mailto:")); // only email apps should handle this
-        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"mugan86@gmail.com"});
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{ConstantValues.CONTACT_EMAIL});
         intent.putExtra(Intent.EXTRA_SUBJECT, subject);
         if (intent.resolveActivity(getPackageManager()) != null) { startActivity(intent);}
     }
