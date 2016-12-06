@@ -151,7 +151,7 @@ public class UploadManagerActivity extends AppCompatActivity {
         upload_imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UploadPhoto upload_photo = new UploadPhoto(UploadManagerActivity.this, output);
+                UploadPhoto upload_photo = new UploadPhoto(UploadManagerActivity.this, upload_file);
                 upload_photo.execute(imagepath);
             }
         });
