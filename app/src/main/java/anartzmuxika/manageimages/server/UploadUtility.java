@@ -26,12 +26,13 @@ public class UploadUtility {
     private String path;
     private FileUploadListener listener;
     private Context context;
-
-    public UploadUtility(String path, Context context, FileUploadListener listener)
+    private File file;
+    public UploadUtility(File file, String path, Context context, FileUploadListener listener)
     {
         this.path = path;
         this.listener = listener;
         this.context = context;
+        this.file = file;
     }
 
     public int up() {
