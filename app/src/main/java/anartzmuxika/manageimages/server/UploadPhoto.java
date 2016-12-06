@@ -4,38 +4,22 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.os.StrictMode;
-import android.util.Log;
-import android.widget.Toast;
 
-import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 import anartzmuxika.manageimages.FileUploadListener;
 
-/**
+/***************************************************************************************************
  * Created by anartzmugika on 22/8/16.
- */
+ * Class to upload photo get to activity path. Using with progress bar (in %) and return 0 or 1
+ **************************************************************************************************/
 
 public class UploadPhoto extends AsyncTask<String, Integer, Boolean> {
     private Context context;
-
+    private File file;
     private ProgressDialog progressDialog;
 
-    private FileUploadListener listener;
-
-    private File file;
-
-    public UploadPhoto(Context context, File file) {
-        this.context = context;
-        this.file = file;
-    }
+    public UploadPhoto(Context context, File file) { this.context = context; this.file = file;}
 
     @Override
     protected Boolean doInBackground(String... params) {
@@ -54,16 +38,13 @@ public class UploadPhoto extends AsyncTask<String, Integer, Boolean> {
         this.progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         this.progressDialog.setProgress(0);
         this.progressDialog.show();
-
     }
 
     @Override
     protected void onPostExecute(Boolean result) {
         super.onPostExecute(result);
 
-
         if (result) {
-
             System.out.println("Upload correct!!");
         } else {
             System.out.println("***********Irudia gaizki igota***********");
@@ -79,16 +60,13 @@ public class UploadPhoto extends AsyncTask<String, Integer, Boolean> {
         super.onProgressUpdate(values);
 
         // UPDATE THE PROGRESS DIALOG
-
         System.out.println("PROGRESS----------->: " + values[0]);
         progressDialog.setMessage(String.valueOf(" (" + values[0] + " %)"));
-
-
     }
 
     private int uploadFile(final String selectedFilePath){
 
-        UploadUtility upload = new UploadUtility(selectedFilePath, context, new FileUploadListener() {
+        UploadUtility upload = new UploadUtility(file, selectedFilePath, context, new FileUploadListener() {
             @Override
             public void onUpdateProgress(final int percentage, final long kb) {
                 ((Activity)context).runOnUiThread(new Runnable() {
