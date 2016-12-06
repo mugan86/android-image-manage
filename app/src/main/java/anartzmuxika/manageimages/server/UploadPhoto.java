@@ -68,7 +68,7 @@ public class UploadPhoto extends AsyncTask<String, Integer, Boolean> {
 
         try
         {
-            UploadUtility upload = new UploadUtility(Urls.URL_LOCALHOST_LOCAL, new FileUploadListener() {
+            MultiPartUtility upload = new MultiPartUtility(Urls.URL_LOCALHOST_LOCAL, new FileUploadListener() {
                 @Override
                 public void onUpdateProgress(final int percentage, final long kb) {
                     ((Activity)context).runOnUiThread(new Runnable() {

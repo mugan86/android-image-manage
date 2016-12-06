@@ -6,14 +6,26 @@ import android.os.StrictMode;
 import android.util.Log;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.List;
+
 
 import anartzmuxika.manageimages.FileUploadListener;
 
@@ -21,18 +33,45 @@ import anartzmuxika.manageimages.FileUploadListener;
  * Created by anartzmugika on 2/12/16.
  */
 
-public class UploadUtility {
-
+public class MultiPartUtility {
+    private String boundary;
+    private static final String LINE_FEED = "\r\n";
     private String path;
     private FileUploadListener listener;
     private Context context;
     private File file;
-    public UploadUtility(File file, String path, Context context, FileUploadListener listener)
+    private HttpURLConnection httpConn;
+    private String charset;
+    private OutputStream outputStream;
+    private PrintWriter writer;
+    public MultiPartUtility(File file, String path, Context context, FileUploadListener listener)
     {
         this.path = path;
         this.listener = listener;
         this.context = context;
         this.file = file;
+    }
+
+    public MultiPartUtility(String requestURL, FileUploadListener listener) throws IOException {
+        this.charset =  "UTF-8";
+
+        this.listener = listener;
+        // creates a unique boundary based on time stamp
+        boundary = "===" + System.currentTimeMillis() + "===";
+
+        URL url = new URL(requestURL);
+        httpConn = (HttpURLConnection) url.openConnection();
+        httpConn.setReadTimeout(15000);
+        httpConn.setConnectTimeout(15000);
+        httpConn.setRequestMethod("POST");
+        httpConn.setUseCaches(false);
+        httpConn.setDoOutput(true);	// indicates POST method
+        httpConn.setDoInput(true);
+        httpConn.setRequestProperty("Content-Type",
+                "multipart/form-data; boundary=" + boundary);
+        outputStream = httpConn.getOutputStream();
+        writer = new PrintWriter(new OutputStreamWriter(outputStream, charset),
+                true);
     }
 
     public int up() {
@@ -167,5 +206,118 @@ public class UploadUtility {
             }
             return serverResponseCode;
         }
+    }
+
+    /**
+     * Adds a form field to the request
+     * @param name field name
+     * @param value field value
+     */
+    public void addFormField(String name, String value) {
+        writer.append("--" + boundary).append(LINE_FEED);
+        writer.append("Content-Disposition: form-data; name=\"" + name + "\"")
+                .append(LINE_FEED);
+        writer.append("Content-Type: text/plain; charset=" + charset).append(
+                LINE_FEED);
+        writer.append(LINE_FEED);
+        writer.append(value).append(LINE_FEED);
+        writer.flush();
+    }
+
+    /**
+     * Adds a upload file section to the request
+     * @param fieldName name attribute in <input type="file" name="..." />
+     * @param uploadFile a File to be uploaded
+     * @throws IOException
+     */
+    public void addFilePart(String fieldName, File uploadFile)
+            throws IOException {
+        String fileName = uploadFile.getName();
+        writer.append("--" + boundary).append(LINE_FEED);
+        writer.append(
+                "Content-Disposition: form-data; name=\"" + fieldName
+                        + "\"; filename=\"" + fileName + "\"")
+                .append(LINE_FEED);
+        writer.append(
+                "Content-Type: "
+                        + URLConnection.guessContentTypeFromName(fileName))
+                .append(LINE_FEED);
+        writer.append("Content-Transfer-Encoding: binary").append(LINE_FEED);
+        writer.append(LINE_FEED);
+        writer.flush();
+
+        FileInputStream inputStream = new FileInputStream(uploadFile);
+        long totalSize = uploadFile.length();
+        byte[] buffer = new byte[4096];
+        long totalRead = 0;
+        int bytesRead = -1;
+        while ((bytesRead = inputStream.read(buffer)) > 0) {
+            outputStream.write(buffer, 0, bytesRead);
+            System.out.println("BYTES READ: " + bytesRead);
+
+            totalRead += bytesRead;
+            int percentage = (int) ((totalRead / (float) totalSize) * 100);
+            //outputStream.write(buffer, 0, bytesRead);
+
+            long now = System.currentTimeMillis();
+
+            Log.e("", totalRead + " " + " " + percentage);
+            this.listener.onUpdateProgress(percentage, totalRead);
+            /*if (lastProgressUpdateTime == 0 || lastProgressUpdateTime < now - 100) {
+                lastProgressUpdateTime = now;
+
+                Log.e("", totalRead + " " + " " + percentage);
+
+                if (listener != null)
+                    this.listener.onUpdateProgress(percentage, totalRead);
+            }*/
+        }
+        outputStream.flush();
+        inputStream.close();
+
+        writer.append(LINE_FEED);
+        writer.flush();
+    }
+
+    public boolean  finish() throws IOException {
+        List<String> response = new ArrayList<>();
+        StringBuilder json = new StringBuilder();
+        writer.append(LINE_FEED).flush();
+        writer.append("--" + boundary + "--").append(LINE_FEED);
+        writer.close();
+
+        // checks server's status code first
+        int status = httpConn.getResponseCode();
+        if (status == HttpURLConnection.HTTP_OK) {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    httpConn.getInputStream()));
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                response.add(line);
+                json.append(line + "\n");
+            }
+            System.out.println(json);
+            reader.close();
+            httpConn.disconnect();
+        } else {
+
+            throw new IOException("Server returned non-OK status: " + status);
+        }
+
+        JSONObject object = null;
+        boolean success = false;
+        try {
+
+            //TODO Define JSON Object in server side to return correct result!!!
+            object = new JSONObject(String.valueOf(json));
+
+            //success = object.getBoolean("success");
+            return true;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+        return false;
     }
 }
