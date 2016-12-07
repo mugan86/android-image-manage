@@ -263,14 +263,6 @@ public class MultiPartUtility {
 
             Log.e("", totalRead + " " + " " + percentage);
             this.listener.onUpdateProgress(percentage, totalRead);
-            /*if (lastProgressUpdateTime == 0 || lastProgressUpdateTime < now - 100) {
-                lastProgressUpdateTime = now;
-
-                Log.e("", totalRead + " " + " " + percentage);
-
-                if (listener != null)
-                    this.listener.onUpdateProgress(percentage, totalRead);
-            }*/
         }
         outputStream.flush();
         inputStream.close();
@@ -305,19 +297,18 @@ public class MultiPartUtility {
         }
 
         JSONObject object = null;
-        boolean success = false;
-        try {
 
-            //TODO Define JSON Object in server side to return correct result!!!
+        try {
             object = new JSONObject(String.valueOf(json));
 
-            //success = object.getBoolean("success");
-            return true;
+            boolean success = object.getBoolean("success");
+            System.out.println("Success? :" + success + " / Message: " + object.getString("message"));
+            return success;
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-
+        System.out.println("Return false!!");
         return false;
     }
 }
