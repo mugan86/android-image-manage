@@ -312,7 +312,7 @@ public class UploadManagerActivity extends AppCompatActivity {
 
                             //imageUri = Uri.fromFile(output);
                         } else if (imageUri.toString().contains(ConstantValues.CONTENT_PROVIDER) &&
-                                (!imageUri.toString().contains("mediakey:/local") && (!imageUri.toString().contains("mediakey%3A%2Flocal")))) {
+                                (!imageUri.toString().contains(ConstantValues.CONTENT_MEDIA_LOCAL) && (!imageUri.toString().contains(ConstantValues.CONTENT_MEDIA_LOCAL_2)))) {
                             imagepath = picturePath;
                             System.out.println("CONTENT PROVIDER: " + picturePath);
                         } else {
