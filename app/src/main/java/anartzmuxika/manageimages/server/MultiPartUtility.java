@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+import javax.net.ssl.HttpsURLConnection;
+
 import anartzmuxika.manageimages.FileUploadListener;
 
 /**************************************************
@@ -41,9 +43,11 @@ public class MultiPartUtility {
     private Context context;
     private File file;
     private HttpURLConnection httpConn;
+    private HttpsURLConnection httpsConn;
     private String charset;
     private OutputStream outputStream;
     private PrintWriter writer;
+    private boolean with_https;
     public MultiPartUtility(File file, String path, Context context, FileUploadListener listener)
     {
         this.path = path;
@@ -52,24 +56,41 @@ public class MultiPartUtility {
         this.file = file;
     }
 
-    public MultiPartUtility(String requestURL, FileUploadListener listener) throws IOException {
+    public MultiPartUtility(String requestURL, FileUploadListener listener, boolean with_https) throws IOException {
         this.charset =  "UTF-8";
 
         this.listener = listener;
         // creates a unique boundary based on time stamp
         boundary = "===" + System.currentTimeMillis() + "===";
-
+        this.with_https = with_https;
         URL url = new URL(requestURL);
-        httpConn = (HttpURLConnection) url.openConnection();
-        httpConn.setReadTimeout(15000);
-        httpConn.setConnectTimeout(15000);
-        httpConn.setRequestMethod("POST");
-        httpConn.setUseCaches(false);
-        httpConn.setDoOutput(true);	// indicates POST method
-        httpConn.setDoInput(true);
-        httpConn.setRequestProperty("Content-Type",
-                "multipart/form-data; boundary=" + boundary);
-        outputStream = httpConn.getOutputStream();
+        if (this.with_https) //Https
+        {
+            httpsConn = (HttpsURLConnection) url.openConnection();
+            httpsConn.setReadTimeout(15000);
+            httpsConn.setConnectTimeout(15000);
+            httpsConn.setRequestMethod("POST");
+            httpsConn.setUseCaches(false);
+            httpsConn.setDoOutput(true);	// indicates POST method
+            httpsConn.setDoInput(true);
+            httpsConn.setRequestProperty("Content-Type",
+                    "multipart/form-data; boundary=" + boundary);
+            outputStream = httpsConn.getOutputStream();
+        }
+        else
+        {
+            httpConn = (HttpURLConnection) url.openConnection();
+            httpConn.setReadTimeout(15000);
+            httpConn.setConnectTimeout(15000);
+            httpConn.setRequestMethod("POST");
+            httpConn.setUseCaches(false);
+            httpConn.setDoOutput(true);	// indicates POST method
+            httpConn.setDoInput(true);
+            httpConn.setRequestProperty("Content-Type",
+                    "multipart/form-data; boundary=" + boundary);
+            outputStream = httpConn.getOutputStream();
+        }
+
         writer = new PrintWriter(new OutputStreamWriter(outputStream, charset),
                 true);
     }
@@ -278,23 +299,47 @@ public class MultiPartUtility {
         writer.append("--" + boundary + "--").append(LINE_FEED);
         writer.close();
 
-        // checks server's status code first
-        int status = httpConn.getResponseCode();
-        if (status == HttpURLConnection.HTTP_OK) {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    httpConn.getInputStream()));
-            String line = null;
-            while ((line = reader.readLine()) != null) {
-                response.add(line);
-                json.append(line + "\n");
-            }
-            System.out.println(json);
-            reader.close();
-            httpConn.disconnect();
-        } else {
+        if (this.with_https)
+        {
+            // checks server's status code first
+            int status = httpsConn.getResponseCode();
+            if (status == HttpsURLConnection.HTTP_OK) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(
+                        httpsConn.getInputStream()));
+                String line = null;
+                while ((line = reader.readLine()) != null) {
+                    response.add(line);
+                    json.append(line + "\n");
+                }
+                System.out.println(json);
+                reader.close();
+                httpsConn.disconnect();
+            } else {
 
-            throw new IOException("Server returned non-OK status: " + status);
+                throw new IOException("Server returned non-OK status: " + status);
+            }
         }
+        else
+        {
+            // checks server's status code first
+            int status = httpConn.getResponseCode();
+            if (status == HttpURLConnection.HTTP_OK) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(
+                        httpConn.getInputStream()));
+                String line = null;
+                while ((line = reader.readLine()) != null) {
+                    response.add(line);
+                    json.append(line + "\n");
+                }
+                System.out.println(json);
+                reader.close();
+                httpConn.disconnect();
+            } else {
+
+                throw new IOException("Server returned non-OK status: " + status);
+            }
+        }
+
 
         JSONObject object = null;
 
