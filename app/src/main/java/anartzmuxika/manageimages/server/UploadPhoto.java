@@ -18,8 +18,9 @@ public class UploadPhoto extends AsyncTask<String, Integer, Boolean> {
     private Context context;
     private File file;
     private ProgressDialog progressDialog;
+    private String request_url;
 
-    public UploadPhoto(Context context, File file) { this.context = context; this.file = file; System.out.println(file.getAbsolutePath());}
+    public UploadPhoto(Context context, File file, String request_url) { this.context = context; this.file = file; this.request_url = request_url;}
 
     @Override
     protected Boolean doInBackground(String... params) {
@@ -68,7 +69,7 @@ public class UploadPhoto extends AsyncTask<String, Integer, Boolean> {
     {
         try
         {
-            MultiPartUtility upload = new MultiPartUtility(Urls.URL_LOCALHOST_LOCAL, new FileUploadListener() {
+            MultiPartUtility upload = new MultiPartUtility(request_url, new FileUploadListener() {
                 /**
                  * @param percentage: Progress number to 100%
                  * @param kb:         Total of size to file
