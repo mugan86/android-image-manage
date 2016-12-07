@@ -24,7 +24,7 @@ public class UploadPhoto extends AsyncTask<String, Integer, Boolean> {
     @Override
     protected Boolean doInBackground(String... params) {
 
-        return uploadFile(params[0]) == 200;
+        return uploadFile();
     }
 
 
@@ -64,8 +64,8 @@ public class UploadPhoto extends AsyncTask<String, Integer, Boolean> {
         progressDialog.setMessage(String.valueOf(" (" + values[0] + " %)"));
     }
 
-    private int uploadFile(final String selectedFilePath){
-
+    private boolean uploadFile()
+    {
         try
         {
             MultiPartUtility upload = new MultiPartUtility(Urls.URL_LOCALHOST_LOCAL, new FileUploadListener() {
@@ -97,14 +97,13 @@ public class UploadPhoto extends AsyncTask<String, Integer, Boolean> {
             //upload.addFormField("mountainid", params[1]);
             //multipart.addFormField("userid", id);
 
-            boolean result = upload.finish();
-            if (result) return 1;
+            return upload.finish();
         }
         catch(Exception e)
         {
             e.printStackTrace();
         }
 
-        return 0;
+        return false;
     }
 }
