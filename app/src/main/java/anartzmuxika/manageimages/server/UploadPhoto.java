@@ -10,7 +10,7 @@ import java.io.File;
 import anartzmuxika.manageimages.FileUploadListener;
 
 /***************************************************************************************************
- * Created by anartzmugika on 22/8/16.
+ * Created by anartzmugika on 22/8/16 / Updated 7/12/2016
  * Class to upload photo get to activity path. Using with progress bar (in %) and return 0 or 1
  **************************************************************************************************/
 
