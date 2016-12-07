@@ -23,6 +23,8 @@ public class ConstantValues {
 
     public static final String CONTENT_PROVIDER = "content://com.google.android.apps.photos.contentprovider";
     public static final String CONTENT_MEDIA = "content://media/";
+    public static final String CONTENT_MEDIA_LOCAL = "mediakey:/local";
+    public static final String CONTENT_MEDIA_LOCAL_2 = "mediakey%3A%2Flocal";
 
     //Contact email
     public static final String CONTACT_EMAIL = "mugan86@gmail.com";
