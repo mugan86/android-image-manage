@@ -32,8 +32,8 @@ import java.io.FileDescriptor;
 
 import anartzmuxika.manageimages.R;
 import anartzmuxika.manageimages.server.UploadPhoto;
+import anartzmuxika.manageimages.server.Urls;
 import anartzmuxika.manageimages.utils.ConstantValues;
-import anartzmuxika.manageimages.utils.DataPreferences;
 import anartzmuxika.manageimages.utils.Directory;
 
 public class UploadManagerActivity extends AppCompatActivity {
@@ -102,7 +102,6 @@ public class UploadManagerActivity extends AppCompatActivity {
                 final CharSequence[] options = {
                         "Camera",
                         "Device (Gallery)",
-                        "Open Storage file reference",
                         "Cancel" };
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(UploadManagerActivity.this);
@@ -117,21 +116,7 @@ public class UploadManagerActivity extends AppCompatActivity {
 
                             if (checkIfPermissionsToManageCamera()) openCamera();
 
-                        } else if (options[item].equals("Open Storage file reference")) {
-
-                            if (!DataPreferences.getPreference(getApplicationContext(), "Local_Reference").equals("")) {
-                                //Change reference after take one reference from image picker or camera
-                                //Necessary add "android.permission.READ_EXTERNAL_STORAGE" permission in manifest and accept permission in version Android M
-                                bitmap = BitmapFactory.decodeFile(DataPreferences.getPreference(getApplicationContext(), "Local_Reference"));
-
-                                show_loadImageView.setImageBitmap(bitmap);
-                            }
-                            else
-                            {
-                                if (checkIfPermissionToReadStorage()) openDeviceGallery();
-                            }
                         }
-
                         //Get image from gallery
                         else if (options[item].equals("Device (Gallery)"))
                         {
@@ -148,10 +133,12 @@ public class UploadManagerActivity extends AppCompatActivity {
             }
         });
 
+        //Send photo to server
         upload_imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UploadPhoto upload_photo = new UploadPhoto(UploadManagerActivity.this, upload_file);
+                //Context - Upload file - Request URL
+                UploadPhoto upload_photo = new UploadPhoto(UploadManagerActivity.this, upload_file, Urls.URL_LOCALHOST_LOCAL);
                 upload_photo.execute(imagepath);
             }
         });
