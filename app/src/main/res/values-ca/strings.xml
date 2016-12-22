@@ -1,21 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string name="action_settings">Configuració</string>
-  <string name="app_name">Administrar imatges</string>
-  <string name="camera_label">Camara</string>
-  <string name="cancel_label">Cancel</string>
-  <string name="data_correct_send">Les dades enviades han estat rebuts correctament</string>
-  <string name="data_no_correct_send">Les dades enviades no s\'han rebut correctament. Prova de nou per favor.</string>
-  <string name="device_label">Galeria d\\'imatges</string>
-  <string name="download_data_progress">Enviant les dades ...</string>
-  <string name="download_image_data_progress">Enviant la imatge...</string>
-  <string name="image_no_take_correctly">La imatge no s\'ha enviat correctament, prova de nou si us plau</string>
-  <string name="image_upload_no_correct">La imatge no s\'ha pujat correctament, prova de nou si us plau.</string>
-  <string name="image_upload_successfully">La imatge ha estat pujada de manera satisfactòria. Gràcies!</string>
-  <string name="no_granted_access">No s\'ha donat permís</string>
-  <string name="send_To_server_label">Sincronitzar</string>
-  <string name="send_label">Desar</string>
-  <string name="show_in_map_text">Mapan</string>
-  <string name="title_activity_main">MainActivity</string>
-  <string name="title_select_option_image">Seleccionar la imatge des del dispositiu o treu una foto</string>
-  <string name="upload_photo">Pujar imatge</string>
+    <string name="action_settings">Configuració</string>
+    <string name="app_name">Administrar imatges</string>
+    <string name="explain_text">Text to explain library functions</string>
+    <string name="camera_label">Camara</string>
+    <string name="cancel_label">Cancel</string>
+    <string name="data_correct_send">Les dades enviades han estat rebuts correctament</string>
+    <string name="data_no_correct_send">Les dades enviades no s\'han rebut correctament. Prova de nou per favor.</string>
+    <string name="device_label">Galeria d\'imatges</string>
+    <string name="download_data_progress">Enviant les dades ...</string>
+    <string name="download_image_data_progress">Enviant la imatge...</string>
+    <string name="image_no_take_correctly">La imatge no s\'ha enviat correctament, prova de nou si us plau</string>
+    <string name="image_upload_no_correct">La imatge no s\'ha pujat correctament, prova de nou si us plau.</string>
+    <string name="image_upload_successfully">La imatge ha estat pujada de manera satisfactòria. Gràcies!</string>
+    <string name="no_granted_access">No s\'ha donat permís</string>
+    <string name="send_To_server_label">Sincronitzar</string>
+    <string name="send_label">Desar</string>
+    <string name="show_in_map_text">Mapan</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_select_option_image">Seleccionar la imatge des del dispositiu o treu una foto</string>
+    <string name="upload_photo">Pujar imatge</string>
 </resources>
