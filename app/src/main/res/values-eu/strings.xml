@@ -1,21 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string name="action_settings">Konfigurazioa</string>
-  <string name="app_name">Irudiak kudeatu</string>
-  <string name="camera_label">Argazki kamera</string>
-  <string name="cancel_label">Utzi</string>
-  <string name="data_correct_send">Datuak zuzen bidalita!</string>
-  <string name="data_no_correct_send">Datuak ez dira zuzen bidali, saiatu berriro!</string>
-  <string name="device_label">Gailuko irudiak</string>
-  <string name="download_data_progress">Datuak bidaltzen…</string>
-  <string name="download_image_data_progress">Irudia bidaltzen…</string>
-  <string name="image_no_take_correctly">Irudia ez da zuzen hartu, saiatu gehitzen berriro mesedez.</string>
-  <string name="image_upload_no_correct">Irudia oker igo da. Saiatu berriro mesedez.</string>
-  <string name="image_upload_successfully">Irudia zuzen igo da. Eskerrik asko!</string>
-  <string name="no_granted_access">Ez da eskatutako baimena eman.</string>
-  <string name="send_To_server_label">Sinkronizatu</string>
-  <string name="send_label">Gorde</string>
-  <string name="show_in_map_text">Mapan</string>
-  <string name="title_activity_main">MainActivity</string>
-  <string name="title_select_option_image">Aukeratu irudia kamera edo gailutik</string>
-  <string name="upload_photo">Igo irudia</string>
+    <string name="action_settings">Konfigurazioa</string>
+    <string name="app_name">Irudiak kudeatu</string>
+    <string name="explain_text">Liburutegi honek zer egiten duen azaltzeko testua</string>
+    <string name="camera_label">Argazki kamera</string>
+    <string name="cancel_label">Utzi</string>
+    <string name="data_correct_send">Datuak zuzen bidalita!</string>
+    <string name="data_no_correct_send">Datuak ez dira zuzen bidali, saiatu berriro!</string>
+    <string name="device_label">Gailuko irudiak</string>
+    <string name="download_data_progress">Datuak bidaltzen…</string>
+    <string name="download_image_data_progress">Irudia bidaltzen…</string>
+    <string name="image_no_take_correctly">Irudia ez da zuzen hartu, saiatu gehitzen berriro mesedez.</string>
+    <string name="image_upload_no_correct">Irudia oker igo da. Saiatu berriro mesedez.</string>
+    <string name="image_upload_successfully">Irudia zuzen igo da. Eskerrik asko!</string>
+    <string name="no_granted_access">Ez da eskatutako baimena eman.</string>
+    <string name="send_To_server_label">Sinkronizatu</string>
+    <string name="send_label">Gorde</string>
+    <string name="show_in_map_text">Mapan</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_select_option_image">Aukeratu irudia kamera edo gailutik</string>
+    <string name="upload_photo">Igo irudia</string>
 </resources>
