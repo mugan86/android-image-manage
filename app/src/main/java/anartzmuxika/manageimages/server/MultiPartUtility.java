@@ -136,7 +136,8 @@ public class MultiPartUtility {
                 connection.setRequestProperty("Connection", "Keep-Alive");
                 connection.setRequestProperty("ENCTYPE", "multipart/form-data");
                 connection.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
-                connection.setRequestProperty("uploaded_file", path);
+                //connection.setRequestProperty("uploaded_file", path);
+                //connection.setRequestProperty("filename", path);
 
                 StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
                 StrictMode.setThreadPolicy(policy);
@@ -341,7 +342,7 @@ public class MultiPartUtility {
         }
 
 
-        JSONObject object = null;
+        JSONObject object;
 
         try {
             object = new JSONObject(String.valueOf(json));
