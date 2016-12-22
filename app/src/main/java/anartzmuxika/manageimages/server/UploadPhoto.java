@@ -19,12 +19,14 @@ public class UploadPhoto extends AsyncTask<String, Integer, Boolean> {
     private File file;
     private ProgressDialog progressDialog;
     private String request_url;
+    private String filename;
 
     public UploadPhoto(Context context, File file, String request_url) { this.context = context; this.file = file; this.request_url = request_url;}
 
     @Override
     protected Boolean doInBackground(String... params) {
 
+        filename = params[1];
         return uploadFile();
     }
 
@@ -99,6 +101,7 @@ public class UploadPhoto extends AsyncTask<String, Integer, Boolean> {
                 }
             }, false);
             upload.addFilePart("uploaded_file", file);
+            upload.addFormField("filename", filename.trim());
             //upload.addFormField("mountainid", params[1]);
             //multipart.addFormField("userid", id);
 
