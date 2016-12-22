@@ -1,21 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string name="action_settings">Configuración</string>
-  <string name="app_name">Administrar imágenes</string>
-  <string name="camera_label">Camara</string>
-  <string name="cancel_label">Cancelar</string>
-  <string name="data_correct_send">Los datos enviados han sido recibidos correctamente</string>
-  <string name="data_no_correct_send">Los datos enviados no se han recibido correctamente. Prueba de nuevo por favor.</string>
-  <string name="device_label">Galería de imágenes</string>
-  <string name="download_data_progress">Enviando los datos…</string>
-  <string name="download_image_data_progress">Enviando la imagen...</string>
-  <string name="image_no_take_correctly">La imagen no se ha enviado correctamente, prueba de nuevo por favor</string>
-  <string name="image_upload_no_correct">La imagen no se ha subido correctamente, prueba de nuevo por favor.</string>
-  <string name="image_upload_successfully">La imagen ha sido subida de manera satisfactoria. Gracias!</string>
-  <string name="no_granted_access">No se ha dado permiso</string>
-  <string name="send_To_server_label">Sincronizar</string>
-  <string name="send_label">Guardar</string>
-  <string name="show_in_map_text">Mapan</string>
-  <string name="title_activity_main">MainActivity</string>
-  <string name="title_select_option_image">Seleccionar la imagen desde el dispositivo o saca una foto</string>
-  <string name="upload_photo">Subir imagen</string>
+    <string name="action_settings">Configuración</string>
+    <string name="app_name">Administrar imágenes</string>
+    <string name="explain_text">Texto que servirá para explicar el propósito de la siguiente libreria</string>
+    <string name="camera_label">Camara</string>
+    <string name="cancel_label">Cancelar</string>
+    <string name="data_correct_send">Los datos enviados han sido recibidos correctamente</string>
+    <string name="data_no_correct_send">Los datos enviados no se han recibido correctamente. Prueba de nuevo por favor.</string>
+    <string name="device_label">Galería de imágenes</string>
+    <string name="download_data_progress">Enviando los datos…</string>
+    <string name="download_image_data_progress">Enviando la imagen...</string>
+    <string name="image_no_take_correctly">La imagen no se ha enviado correctamente, prueba de nuevo por favor</string>
+    <string name="image_upload_no_correct">La imagen no se ha subido correctamente, prueba de nuevo por favor.</string>
+    <string name="image_upload_successfully">La imagen ha sido subida de manera satisfactoria. Gracias!</string>
+    <string name="no_granted_access">No se ha dado permiso</string>
+    <string name="send_To_server_label">Sincronizar</string>
+    <string name="send_label">Guardar</string>
+    <string name="show_in_map_text">Mapan</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_select_option_image">Seleccionar la imagen desde el dispositivo o saca una foto</string>
+    <string name="upload_photo">Subir imagen</string>
 </resources>
