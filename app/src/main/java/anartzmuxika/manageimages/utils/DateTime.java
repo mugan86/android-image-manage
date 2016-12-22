@@ -24,10 +24,16 @@ public class DateTime {
         return  Calendar.getInstance();
     }
 
-
-    public static String getCurrentDataTime ()
+    /**********
+     *
+     * @param normal: If true, show yyyy-MM-dd HH:mm:ss format. False: yyyy_MM_dd_HH_mm_ss
+     * @return
+     */
+    public static String getCurrentDataTime (boolean normal)
     {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String format_data = "yyyy-MM-dd HH:mm:ss";
+        if (!normal) format_data = "yyyy_MM_dd__HH_mm_ss";
+        DateFormat dateFormat = new SimpleDateFormat(format_data);
         Date date = new Date();
         return dateFormat.format(date);
     }
