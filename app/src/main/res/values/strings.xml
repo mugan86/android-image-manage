@@ -1,6 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Manage Images and Upload</string>
     <string name="action_settings">Settings</string>
+
+    <string name="explain_text">Text to explain library functions</string>
 
     <!-- Camera / Directory and Dialogs texts options-->
     <string name="title_select_option_image">Select image from device or take photo</string>
