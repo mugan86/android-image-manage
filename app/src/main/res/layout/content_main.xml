@@ -18,23 +18,8 @@
         android:orientation="vertical">
         <TextView
             android:gravity="center"
-            android:text="@string/app_name"
+            android:text="@string/explain_text"
             android:id="@+id/text_about_libraryTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <Button
-            android:layout_marginTop="25sp"
-            android:text="@string/title_select_option_image"
-            android:drawableLeft="@android:drawable/ic_menu_gallery"
-            android:id="@+id/open_image_optionsButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-        <Button
-            android:layout_marginTop="25sp"
-            android:text="Upload Image"
-            android:drawableLeft="@android:drawable/ic_menu_upload"
-            android:id="@+id/upload_imageButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>
