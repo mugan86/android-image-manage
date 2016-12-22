@@ -34,6 +34,7 @@ import anartzmuxika.manageimages.R;
 import anartzmuxika.manageimages.server.UploadPhoto;
 import anartzmuxika.manageimages.server.Urls;
 import anartzmuxika.manageimages.utils.ConstantValues;
+import anartzmuxika.manageimages.utils.DateTime;
 import anartzmuxika.manageimages.utils.Directory;
 
 public class UploadManagerActivity extends AppCompatActivity {
@@ -56,6 +57,7 @@ public class UploadManagerActivity extends AppCompatActivity {
 
     FloatingActionMenu materialDesignFAM;
     FloatingActionButton floatingActionButton1, floatingActionButton2, floatingActionButton3;
+    private boolean start = true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +68,9 @@ public class UploadManagerActivity extends AppCompatActivity {
         initializeComponents();
 
         addActions();
+
+        //Check file manage read storage in start
+        checkIfPermissionToReadStorage();
 
     }
 
@@ -120,6 +125,7 @@ public class UploadManagerActivity extends AppCompatActivity {
                         //Get image from gallery
                         else if (options[item].equals("Device (Gallery)"))
                         {
+                            start = false;
                             if (checkIfPermissionToReadStorage()) openDeviceGallery();
                         }
 
@@ -137,9 +143,12 @@ public class UploadManagerActivity extends AppCompatActivity {
         upload_imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                String name = "servirace_app";
+                String datatime = DateTime.getCurrentDataTime(false);
                 //Context - Upload file - Request URL
                 UploadPhoto upload_photo = new UploadPhoto(UploadManagerActivity.this, upload_file, Urls.URL_LOCALHOST_LOCAL);
-                upload_photo.execute(imagepath);
+                upload_photo.execute(imagepath, name+datatime+".jpeg");
             }
         });
 
@@ -152,6 +161,7 @@ public class UploadManagerActivity extends AppCompatActivity {
         });
         floatingActionButton2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                start = false;
                 if (checkIfPermissionToReadStorage()) openDeviceGallery();
                 materialDesignFAM.close(true);
             }
@@ -381,7 +391,7 @@ public class UploadManagerActivity extends AppCompatActivity {
                 if (res[0] == PackageManager.PERMISSION_GRANTED)
                 {
                     if (rCode == ConstantValues.GRANTED_CAMERA) openCamera();
-                    if (rCode == ConstantValues.GRANTED_ACCESS_STORAGE) openDeviceGallery();
+                    if (rCode == ConstantValues.GRANTED_ACCESS_STORAGE && !start) openDeviceGallery();
                     else System.out.println("Available!!!");
                 }
             }
