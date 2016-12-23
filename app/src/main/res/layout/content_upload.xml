@@ -31,6 +31,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
             <Button
+                android:visibility="gone"
                 android:layout_marginTop="25sp"
                 android:text="Upload Image"
                 android:drawableLeft="@android:drawable/ic_menu_upload"
