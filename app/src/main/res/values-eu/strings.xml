@@ -20,4 +20,5 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="title_select_option_image">Aukeratu irudia kamera edo gailutik</string>
     <string name="upload_photo">Igo irudia</string>
+    <string name="upload_photo_ok">Irudia igotzeko prest dago! Aukeratu "Igo irudia"</string>
 </resources>
