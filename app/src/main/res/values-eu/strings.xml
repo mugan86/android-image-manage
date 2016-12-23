@@ -21,4 +21,5 @@
     <string name="title_select_option_image">Aukeratu irudia kamera edo gailutik</string>
     <string name="upload_photo">Igo irudia</string>
     <string name="upload_photo_ok">Irudia igotzeko prest dago! Aukeratu "Igo irudia"</string>
+    <string name="manage_upload_images">Igotzeko irudiak kudeatu</string>
 </resources>
