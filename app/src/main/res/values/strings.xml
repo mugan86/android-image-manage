@@ -25,4 +25,7 @@
     <string name="data_no_correct_send">Data NOT send sucessfully, please try again.</string>
     <string name="show_in_map_text"><u>In Map</u></string>
     <string name="title_activity_main">MainActivity</string>
+
+    <string name="upload_photo_ok">The image is ready to upload! Select "Upload Image"</string>
+    <string name="manage_upload_images">Manage images to upload</string>
 </resources>
