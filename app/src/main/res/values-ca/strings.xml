@@ -20,4 +20,7 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="title_select_option_image">Seleccionar la imatge des del dispositiu o treu una foto</string>
     <string name="upload_photo">Pujar imatge</string>
+    <string name="upload_photo_ok">La imatge està preparada per pujar! Seleccionar "Pujar imatge"</string>
+    <string name="manage_upload_images">Administrar imatges per pujar-les</string>
+
 </resources>
