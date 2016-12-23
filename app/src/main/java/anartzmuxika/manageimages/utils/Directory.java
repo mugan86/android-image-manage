@@ -6,8 +6,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -235,7 +235,6 @@ public class Directory {
             imageFileName = getTimestamp(); // make random filename if you want.
 
         final File root;
-        imageFileName = imageFileName;
         root = context.getExternalCacheDir();
 
         if (root != null && !root.exists())
@@ -266,7 +265,7 @@ public class Directory {
         //Get image original width and height
         int width = image.getWidth();
         int height = image.getHeight();
-
+/*
         //Android Note: Scale the bitmap and keep aspect ratio
         RectF defaultRect = new RectF(0, 0, width, height);
         RectF screenRect = new RectF(0, 0, w, h);
@@ -284,7 +283,38 @@ public class Directory {
                 matrix, false);
 
         System.out.println("NEW---> Width" + resizedBitmap.getWidth() + " / " + "Height: " + resizedBitmap.getHeight());
-        return resizedBitmap;
+        return resizedBitmap;*/
+
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+
+
+// Calculate the correct inSampleSize/scale value. This helps reduce memory use. It should be a power of 2
+// from: http://stackoverflow.com/questions/477572/android-strange-out-of-memory-issue/823966#823966
+        int inSampleSize = 1;
+        while(width / 2 > w){
+            width /= 2;
+            height /= 2;
+            inSampleSize *= 2;
+        }
+
+        float desiredScale = (float) w / width;
+
+// Decode with inSampleSize
+        options.inJustDecodeBounds = false;
+        options.inDither = false;
+        options.inSampleSize = inSampleSize;
+        options.inScaled = false;
+        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+
+
+// Resize
+        Matrix matrix = new Matrix();
+        matrix.postScale(desiredScale, desiredScale);
+        return Bitmap.createBitmap(image, 0, 0, width, height, matrix, true);
+
+
 
     }
 }
