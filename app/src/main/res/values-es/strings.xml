@@ -20,5 +20,7 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="title_select_option_image">Seleccionar la imagen desde el dispositivo o saca una foto</string>
     <string name="upload_photo">Subir imagen</string>
-    <string name="upload_photo_ok">¡La image está preparada para subirse! Seleccionar "Igo irudia"</string>
+    <string name="upload_photo_ok">¡La imagen está preparada para subirse! Seleccionar "Subir imagen"</string>
+    <string name="manage_upload_images">Administrar imágenes para subirlas</string>
+
 </resources>
