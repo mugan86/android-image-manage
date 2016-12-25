@@ -30,6 +30,45 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="12"/>
+
+        <TextView
+            android:layout_marginTop="15sp"
+            android:gravity="center"
+            android:text="@string/select_language_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <Button
+            android:text="@string/basque_language"
+            android:id="@+id/select_basqueButton"
+            android:layout_marginTop="5sp"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="12"/>
+        <Button
+            android:text="@string/catala_language"
+            android:id="@+id/select_catalaButton"
+            android:layout_marginTop="5sp"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="12"/>
+        <Button
+            android:text="@string/english_language"
+            android:id="@+id/select_englishButton"
+            android:layout_marginTop="5sp"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="12"/>
+        <Button
+            android:text="@string/spanish_language"
+            android:id="@+id/select_spanishButton"
+            android:layout_marginTop="5sp"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="12"/>
     </LinearLayout>
 
 
