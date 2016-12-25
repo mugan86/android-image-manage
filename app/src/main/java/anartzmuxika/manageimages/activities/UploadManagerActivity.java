@@ -34,8 +34,10 @@ import anartzmuxika.manageimages.R;
 import anartzmuxika.manageimages.server.UploadPhoto;
 import anartzmuxika.manageimages.server.Urls;
 import anartzmuxika.manageimages.utils.ConstantValues;
+import anartzmuxika.manageimages.utils.DataPreferences;
 import anartzmuxika.manageimages.utils.DateTime;
 import anartzmuxika.manageimages.utils.Directory;
+import anartzmuxika.manageimages.utils.Filename;
 
 public class UploadManagerActivity extends AppCompatActivity {
 
@@ -55,8 +57,10 @@ public class UploadManagerActivity extends AppCompatActivity {
 
     private File upload_file;
 
-    FloatingActionMenu materialDesignFAM;
-    FloatingActionButton floatingActionButton1, floatingActionButton2, floatingActionButton3;
+    private FloatingActionMenu materialDesignFAM;
+    private FloatingActionButton floatingActionButton1, floatingActionButton2, floatingActionButton3;
+
+
     private boolean start = true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +68,8 @@ public class UploadManagerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_upload);
 
         activity = UploadManagerActivity.this;
+
+        DataPreferences.loadLocale(activity);
 
         initializeComponents();
 
@@ -144,11 +150,14 @@ public class UploadManagerActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                String user_basic_data = DataPreferences.getPreference(activity, ConstantValues.USER_DEFAULT_DATA_TO_USE_IN_FILENAME);
                 String name = "servirace_app";
                 String datatime = DateTime.getCurrentDataTime(false);
+                String filename = name+datatime+".jpeg";
+                if (!user_basic_data.equals("")) filename = "%s_" + filename;
                 //Context - Upload file - Request URL
                 UploadPhoto upload_photo = new UploadPhoto(UploadManagerActivity.this, upload_file, Urls.URL_LOCALHOST_LOCAL);
-                upload_photo.execute(imagepath, name+datatime+".jpeg");
+                upload_photo.execute(imagepath, new Filename().getFIlenameWithNameBasicData(user_basic_data, filename));
             }
         });
 
