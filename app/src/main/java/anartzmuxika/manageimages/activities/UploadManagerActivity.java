@@ -157,7 +157,7 @@ public class UploadManagerActivity extends AppCompatActivity {
                 if (!user_basic_data.equals("")) filename = "%s_" + filename;
                 //Context - Upload file - Request URL
                 UploadPhoto upload_photo = new UploadPhoto(UploadManagerActivity.this, upload_file, Urls.URL_LOCALHOST_LOCAL);
-                upload_photo.execute(imagepath, new Filename().getFIlenameWithNameBasicData(user_basic_data, filename));
+                upload_photo.execute(imagepath, new Filename().getFilenameWithNameBasicData(user_basic_data, filename));
             }
         });
 
