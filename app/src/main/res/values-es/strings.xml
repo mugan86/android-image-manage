@@ -22,5 +22,11 @@
     <string name="upload_photo">Subir imagen</string>
     <string name="upload_photo_ok">¡La imagen está preparada para subirse! Seleccionar "Subir imagen"</string>
     <string name="manage_upload_images">Administrar imágenes para subirlas</string>
+    <string name="select_language_title">Selecciona un idioma:</string>
+
+    <string name="spanish_language">Español</string>
+    <string name="basque_language">Euskara</string>
+    <string name="english_language">English</string>
+    <string name="catala_language">Catala</string>
 
 </resources>

@@ -22,4 +22,10 @@
     <string name="upload_photo">Igo irudia</string>
     <string name="upload_photo_ok">Irudia igotzeko prest dago! Aukeratu "Igo irudia"</string>
     <string name="manage_upload_images">Igotzeko irudiak kudeatu</string>
+    <string name="select_language_title">Aukeratu zure hizkuntza:</string>
+    <string name="spanish_language">Español</string>
+    <string name="basque_language">Euskara</string>
+    <string name="english_language">English</string>
+    <string name="catala_language">Catala</string>
+
 </resources>

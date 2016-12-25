@@ -28,4 +28,10 @@
 
     <string name="upload_photo_ok">The image is ready to upload! Select "Upload Image"</string>
     <string name="manage_upload_images">Manage images to upload</string>
+    <string name="select_language_title">Select your language:</string>
+
+    <string name="spanish_language">Español</string>
+    <string name="basque_language">Euskara</string>
+    <string name="english_language">English</string>
+    <string name="catala_language">Catala</string>
 </resources>
