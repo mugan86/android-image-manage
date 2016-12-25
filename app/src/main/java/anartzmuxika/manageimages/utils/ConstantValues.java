@@ -28,4 +28,7 @@ public class ConstantValues {
 
     //Contact email
     public static final String CONTACT_EMAIL = "mugan86@gmail.com";
+
+    //User name and lastname to use in file name
+    public static final String USER_DEFAULT_DATA_TO_USE_IN_FILENAME = "user_basic_data_to_filename";
 }
