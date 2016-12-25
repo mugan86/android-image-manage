@@ -290,8 +290,8 @@ public class Directory {
         options.inJustDecodeBounds = true;
 
 
-// Calculate the correct inSampleSize/scale value. This helps reduce memory use. It should be a power of 2
-// from: http://stackoverflow.com/questions/477572/android-strange-out-of-memory-issue/823966#823966
+        // Calculate the correct inSampleSize/scale value. This helps reduce memory use. It should be a power of 2
+        // from: http://stackoverflow.com/questions/477572/android-strange-out-of-memory-issue/823966#823966
         int inSampleSize = 1;
         while(width / 2 > w){
             width /= 2;
@@ -301,7 +301,7 @@ public class Directory {
 
         float desiredScale = (float) w / width;
 
-// Decode with inSampleSize
+        // Decode with inSampleSize
         options.inJustDecodeBounds = false;
         options.inDither = false;
         options.inSampleSize = inSampleSize;
@@ -309,7 +309,7 @@ public class Directory {
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
 
 
-// Resize
+        // Resize
         Matrix matrix = new Matrix();
         matrix.postScale(desiredScale, desiredScale);
         return Bitmap.createBitmap(image, 0, 0, width, height, matrix, true);
