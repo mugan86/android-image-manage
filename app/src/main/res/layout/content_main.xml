@@ -32,6 +32,7 @@
             android:ems="12"/>
 
         <TextView
+            android:id="@+id/select_language_title"
             android:layout_marginTop="15sp"
             android:gravity="center"
             android:text="@string/select_language_title"
