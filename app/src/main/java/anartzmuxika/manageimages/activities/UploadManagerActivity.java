@@ -32,7 +32,6 @@ import java.io.FileDescriptor;
 
 import anartzmuxika.manageimages.R;
 import anartzmuxika.manageimages.server.UploadPhoto;
-import anartzmuxika.manageimages.server.Urls;
 import anartzmuxika.manageimages.utils.ConstantValues;
 import anartzmuxika.manageimages.utils.DataPreferences;
 import anartzmuxika.manageimages.utils.DateTime;
@@ -62,6 +61,7 @@ public class UploadManagerActivity extends AppCompatActivity {
 
 
     private boolean start = true;
+    private String url_to_upload;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +77,12 @@ public class UploadManagerActivity extends AppCompatActivity {
 
         //Check file manage read storage in start
         checkIfPermissionToReadStorage();
+
+        if( savedInstanceState == null ) {
+            url_to_upload =
+                    getIntent().getStringExtra("url_to_upload");
+            System.out.println("LOCALHOST: " + url_to_upload);
+        }
 
     }
 
@@ -156,7 +162,7 @@ public class UploadManagerActivity extends AppCompatActivity {
                 String filename = name+datatime+".jpeg";
                 if (!user_basic_data.equals("")) filename = "%s_" + filename;
                 //Context - Upload file - Request URL
-                UploadPhoto upload_photo = new UploadPhoto(UploadManagerActivity.this, upload_file, Urls.URL_LOCALHOST_LOCAL);
+                UploadPhoto upload_photo = new UploadPhoto(UploadManagerActivity.this, upload_file, url_to_upload);
                 upload_photo.execute(imagepath, new Filename().getFilenameWithNameBasicData(user_basic_data, filename));
             }
         });
