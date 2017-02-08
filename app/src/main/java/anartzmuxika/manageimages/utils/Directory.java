@@ -287,7 +287,7 @@ public class Directory {
 
 
         BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
+        //options.inJustDecodeBounds = true;
 
 
         // Calculate the correct inSampleSize/scale value. This helps reduce memory use. It should be a power of 2
@@ -302,7 +302,7 @@ public class Directory {
         float desiredScale = (float) w / width;
 
         // Decode with inSampleSize
-        options.inJustDecodeBounds = false;
+        options.inJustDecodeBounds = true;
         options.inDither = false;
         options.inSampleSize = inSampleSize;
         options.inScaled = false;

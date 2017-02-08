@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
     private void openImageManageOptionsActivity()
     {
         Intent open_upload_activity_intent = new Intent(MainActivity.this, UploadManagerActivity.class);
-        open_upload_activity_intent.putExtra("url_to_upload", Urls.URL_LOCALHOST_LOCAL);
+        open_upload_activity_intent.putExtra("url_to_upload", Urls.URL_LOCALHOST);
         startActivity(open_upload_activity_intent);
     }
 

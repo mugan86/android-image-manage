@@ -71,6 +71,13 @@ public class UploadPhoto extends AsyncTask<String, Integer, Boolean> {
     {
         try
         {
+            boolean with_https = false;
+            if (request_url.contains("https"))
+            {
+                with_https = true;
+            }
+
+            System.out.println(with_https);
             MultiPartUtility upload = new MultiPartUtility(request_url, new FileUploadListener() {
                 /**
                  * @param percentage: Progress number to 100%
@@ -99,7 +106,7 @@ public class UploadPhoto extends AsyncTask<String, Integer, Boolean> {
                 public void transferred(long num, long max) {
 
                 }
-            }, false);
+            }, with_https);
             upload.addFilePart("uploaded_file", file);
             upload.addFormField("filename", filename.trim());
             //upload.addFormField("mountainid", params[1]);
