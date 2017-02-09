@@ -42,6 +42,7 @@ import java.net.URL;
 import anartzmuxika.manageimages.R;
 import anartzmuxika.manageimages.utils.ConstantValues;
 import anartzmuxika.manageimages.utils.DataPreferences;
+import anartzmuxika.manageimages.utils.DateTime;
 import anartzmuxika.manageimages.utils.Directory;
 
 public class UploadManagerActivity extends AppCompatActivity {
@@ -474,6 +475,8 @@ public class UploadManagerActivity extends AppCompatActivity {
 
         public int uploadFile(final String selectedFilePath) {
 
+            //Send filename (use in server with ['uploaded_file'] ['filename']
+            String filename = DateTime.getCurrentData() + "-Anartz";
             int serverResponseCode = 0;
 
             HttpURLConnection connection;
@@ -515,7 +518,8 @@ public class UploadManagerActivity extends AppCompatActivity {
                     connection.setRequestProperty("ENCTYPE", "multipart/form-data");
                     connection.setRequestProperty(
                             "Content-Type", "multipart/form-data;boundary=" + boundary);
-                    connection.setRequestProperty("uploaded_file",selectedFilePath);
+                    connection.setRequestProperty("uploaded_file",upload_file.getAbsolutePath());
+
 
                     //creating new dataoutputstream
                     dataOutputStream = new DataOutputStream(connection.getOutputStream());
@@ -523,7 +527,7 @@ public class UploadManagerActivity extends AppCompatActivity {
                     //writing bytes to data outputstream
                     dataOutputStream.writeBytes(twoHyphens + boundary + lineEnd);
                     dataOutputStream.writeBytes("Content-Disposition: form-data; name=\"uploaded_file\";filename=\""
-                            + selectedFilePath + "\"" + lineEnd);
+                            + filename + "\"" + lineEnd);
 
                     dataOutputStream.writeBytes(lineEnd);
 
@@ -536,15 +540,26 @@ public class UploadManagerActivity extends AppCompatActivity {
 
                     //reads bytes from FileInputStream(from 0th index of buffer to buffersize)
                     bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-
-
+                    long totalSize = selectedFile.length();
+                    long totalRead = 0;
                     //loop repeats till bytesRead = -1, i.e., no bytes are left to read
+
+                    //TODO add fileuploadlistener
                     while (bytesRead > 0) {
 
                         try {
 
                             //write the bytes read from inputstream
                             dataOutputStream.write(buffer, 0, bufferSize);
+
+                            totalRead += bytesRead;
+                            int percentage = (int) ((totalRead / (float) totalSize) * 100);
+                            //outputStream.write(buffer, 0, bytesRead);
+
+                            long now = System.currentTimeMillis();
+
+                            Log.e("", totalRead + " " + " " + percentage);
+                            //this.listener.onUpdateProgress(percentage, totalRead);
                         } catch (OutOfMemoryError e) {
                             Toast.makeText(UploadManagerActivity.this, "Insufficient Memory!", Toast.LENGTH_SHORT).show();
                         }
