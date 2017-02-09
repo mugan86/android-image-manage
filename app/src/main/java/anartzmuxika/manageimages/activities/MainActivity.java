@@ -13,7 +13,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import anartzmuxika.manageimages.R;
-import anartzmuxika.manageimages.server.Urls;
 import anartzmuxika.manageimages.utils.DataPreferences;
 
 public class MainActivity extends AppCompatActivity {
@@ -96,7 +95,8 @@ public class MainActivity extends AppCompatActivity {
     private void openImageManageOptionsActivity()
     {
         Intent open_upload_activity_intent = new Intent(MainActivity.this, UploadManagerActivity.class);
-        open_upload_activity_intent.putExtra("url_to_upload", Urls.URL_LOCALHOST);
+        String url = "http://mugan86.com/android_images/UploadToServer.php";
+        open_upload_activity_intent.putExtra("url_to_upload", url);
         startActivity(open_upload_activity_intent);
     }
 
