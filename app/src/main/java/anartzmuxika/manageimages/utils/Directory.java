@@ -116,7 +116,7 @@ public class Directory {
     public static File savebitmap(Bitmap bmp) throws IOException {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         String image_url = (DateTime.getCurrentDataTime(true) + "_image.jpeg").replace(" ", "_").replace("-", "_").replace(":", "_");
-        bmp.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        bmp.compress(Bitmap.CompressFormat.PNG, 100, bytes);
         String pathname = Environment.getExternalStorageDirectory()
                 + File.separator + image_url;
         File f = new File(pathname);
