@@ -108,7 +108,7 @@ public class UploadPhoto extends AsyncTask<String, Integer, Boolean> {
                 }
             }, with_https);
             upload.addFilePart("uploaded_file", file);
-            upload.addFormField("filename", filename.trim());
+            //upload.addFormField("filename", filename.trim());
             //upload.addFormField("mountainid", params[1]);
             //multipart.addFormField("userid", id);
 
