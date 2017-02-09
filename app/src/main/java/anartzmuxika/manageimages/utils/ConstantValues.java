@@ -5,6 +5,8 @@ package anartzmuxika.manageimages.utils;
  */
 public class ConstantValues {
 
+    public static final String SERVIRACE_APP = "servirace_app_";
+
     //Image Manage Request Codes
 
     public static final int IMAGE_PICKER_CAMERA = 198;
