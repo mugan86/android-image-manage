@@ -9,9 +9,11 @@ import java.io.File;
 
 import anartzmuxika.manageimages.FileUploadListener;
 
-/**
- * Created by anartzmugika on 10/2/17.
- */
+/***************************************************************************************************
+ * Created by anartzmugika on 22/8/16 / Updated 10/02/2017
+ * Class to upload photo get to activity path. Using with progress bar (in %) and return 200 or other
+ * response code
+ **************************************************************************************************/
 
 public class UploadPhotoTask extends AsyncTask<String, Integer, Integer> {
 
