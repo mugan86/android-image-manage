@@ -124,32 +124,32 @@ public class UploadManagerActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 final CharSequence[] options = {
-                        "Camera",
-                        "Device (Gallery)",
-                        "Cancel" };
+                        getResources().getString(R.string.camera),
+                        getResources().getString(R.string.device_gallery),
+                        getResources().getString(R.string.cancel_pick) };
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(UploadManagerActivity.this);
-                builder.setTitle("Select image from camera or device");
+                builder.setTitle(getResources().getString(R.string.select_image));
                 builder.setItems(options, new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialog, int item) {
 
                         //Open camera to capture image
-                        if (options[item].equals("Camera")) {
+                        if (options[item].equals(getResources().getString(R.string.camera))) {
 
                             if (checkIfPermissionsToManageCamera()) openCamera();
 
                         }
                         //Get image from gallery
-                        else if (options[item].equals("Device (Gallery)"))
+                        else if (options[item].equals(getResources().getString(R.string.device_gallery)))
                         {
                             start = false;
                             if (checkIfPermissionToReadStorage()) openDeviceGallery();
                         }
 
                         //Exit dialog
-                        else if (options[item].equals("Cancel")) {
+                        else if (options[item].equals(getResources().getString(R.string.cancel_pick))) {
                             dialog.dismiss();
                         }
                     }
