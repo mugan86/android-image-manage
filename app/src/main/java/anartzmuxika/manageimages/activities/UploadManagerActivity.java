@@ -39,7 +39,7 @@ import anartzmuxika.manageimages.utils.Directory;
 public class UploadManagerActivity extends AppCompatActivity {
 
     private ImageView show_loadImageView;
-    private Button open_image_optionsButton, upload_imageButton;
+    private Button open_image_optionsButton, upload_imageButton, rotateImageNineteenDegreeButton;
 
     //Image manage values
     private File output;
@@ -102,6 +102,9 @@ public class UploadManagerActivity extends AppCompatActivity {
         open_image_optionsButton = (Button) findViewById(R.id.open_image_optionsButton);
         upload_imageButton = (Button) findViewById(R.id.upload_imageButton);
         upload_imageButton.setVisibility(View.GONE);
+
+        rotateImageNineteenDegreeButton = (Button) findViewById(R.id.rotateImageNineteenDegreeButton);
+        rotateImageNineteenDegreeButton.setVisibility(View.GONE);
 
         materialDesignFAM = (FloatingActionMenu) findViewById(R.id.material_design_android_floating_action_menu);
         floatingActionButton1 = (FloatingActionButton) findViewById(R.id.material_design_floating_action_menu_item1);
@@ -176,6 +179,13 @@ public class UploadManagerActivity extends AppCompatActivity {
             public void onClick(View v) {
                 sendEmail("Contact with Anartz!");
                 materialDesignFAM.close(true);
+            }
+        });
+
+        rotateImageNineteenDegreeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                show_loadImageView.setImageBitmap(Directory.setRotateBitmap(bitmap, 90));
             }
         });
     }
@@ -379,8 +389,16 @@ public class UploadManagerActivity extends AppCompatActivity {
 
         show_loadImageView.setImageBitmap(bitmap);
 
-        if (bitmap != null) upload_imageButton.setVisibility(View.VISIBLE);
-        else upload_imageButton.setVisibility(View.GONE);
+        if (bitmap != null)
+        {
+            upload_imageButton.setVisibility(View.VISIBLE);
+            rotateImageNineteenDegreeButton.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            rotateImageNineteenDegreeButton.setVisibility(View.GONE);
+            upload_imageButton.setVisibility(View.GONE);
+        }
 
     }
 

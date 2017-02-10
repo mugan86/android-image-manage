@@ -2,7 +2,8 @@
 <LinearLayout android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    xmlns:fab="http://schemas.android.com/apk/res-auto">
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/tools">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -24,9 +25,18 @@
 
             <Button
                 android:layout_marginTop="25sp"
-                android:text="@string/title_select_option_image"
+                android:text="Rotar 90º"
                 android:drawableLeft="@android:drawable/ic_menu_gallery"
                 android:layout_below="@+id/show_loadImageView"
+                android:id="@+id/rotateImageNineteenDegreeButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:layout_marginTop="25sp"
+                android:text="@string/title_select_option_image"
+                android:drawableLeft="@android:drawable/ic_menu_gallery"
+                android:layout_below="@+id/rotateImageNineteenDegreeButton"
                 android:id="@+id/open_image_optionsButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
