@@ -29,4 +29,10 @@
     <string name="english_language">English</string>
     <string name="catala_language">Catala</string>
 
+    <!--photo select titles -->
+    <string name="select_image">"Seleccionar una imatge de càmera o dispositiu"</string>
+    <string name="device_gallery">"Dispositiu (Galeria)"</string>
+    <string name="camera">"Càmera"</string>
+    <string name="cancel_pick">"Cancelar"</string>
+
 </resources>

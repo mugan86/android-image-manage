@@ -28,4 +28,10 @@
     <string name="english_language">English</string>
     <string name="catala_language">Catala</string>
 
+    <!--photo select titles -->
+    <string name="select_image">"Aukeratu irudia kameratik edo gailutik"</string>
+    <string name="device_gallery">"Gailua (Galeria)"</string>
+    <string name="camera">"Kamera"</string>
+    <string name="cancel_pick">"Ezeztatu"</string>
+
 </resources>

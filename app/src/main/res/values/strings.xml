@@ -34,4 +34,10 @@
     <string name="basque_language">Euskara</string>
     <string name="english_language">English</string>
     <string name="catala_language">Catala</string>
+
+    <!--photo select titles -->
+    <string name="select_image">"Select image from camera or device"</string>
+    <string name="device_gallery">"Device (Gallery)"</string>
+    <string name="camera">"Camera"</string>
+    <string name="cancel_pick">"Cancel"</string>
 </resources>
