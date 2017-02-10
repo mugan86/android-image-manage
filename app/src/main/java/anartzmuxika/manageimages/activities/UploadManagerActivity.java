@@ -8,7 +8,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -18,7 +17,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,20 +27,13 @@ import android.widget.Toast;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileDescriptor;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 import anartzmuxika.manageimages.R;
+import anartzmuxika.manageimages.server.UploadPhotoTask;
 import anartzmuxika.manageimages.utils.ConstantValues;
 import anartzmuxika.manageimages.utils.DataPreferences;
-import anartzmuxika.manageimages.utils.DateTime;
 import anartzmuxika.manageimages.utils.Directory;
 
 public class UploadManagerActivity extends AppCompatActivity {
@@ -163,18 +154,7 @@ public class UploadManagerActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                /*String user_basic_data = DataPreferences.getPreference(activity, ConstantValues.USER_DEFAULT_DATA_TO_USE_IN_FILENAME);
-                String name = "servirace_app";
-                String datatime = DateTime.getCurrentDataTime(false);
-                String filename = name+datatime+".jpeg";
-                if (!user_basic_data.equals("")) filename = "%s_" + filename;
-                //Context - Upload file - Request URL
-                UploadPhoto upload_photo = new UploadPhoto(UploadManagerActivity.this, upload_file, url_to_upload);
-                upload_photo.execute(imagepath, new Filename().getFilenameWithNameBasicData(user_basic_data, filename));*/
-
-                //uploadFile(imagepath);
-
-                new UploadTask().execute();
+                new UploadPhotoTask(UploadManagerActivity.this, upload_file, url_to_upload, imagepath).execute();
             }
         });
 
@@ -453,180 +433,7 @@ public class UploadManagerActivity extends AppCompatActivity {
 
 
 
-    class UploadTask extends AsyncTask<String, Void, Integer> {
-
-        private Exception exception;
-
-        protected Integer doInBackground(String... urls) {
-            try {
-                return uploadFile(imagepath);
-            } catch (Exception e) {
-                this.exception = e;
-
-                return null;
-            }
-        }
-
-        protected void onPostExecute(Integer int_) {
-            // TODO: check this.exception
-            // TODO: do something with the feed
-            System.out.println("SERVER RETURN: " + int_);
-        }
-
-        public int uploadFile(final String selectedFilePath) {
-
-            //Send filename (use in server with ['uploaded_file'] ['filename']
-            String filename = DateTime.getCurrentData() + "-Anartz";
-            int serverResponseCode = 0;
-
-            HttpURLConnection connection;
-            DataOutputStream dataOutputStream;
-            String lineEnd = "\r\n";
-            String twoHyphens = "--";
-            String boundary = "*****";
-
-
-            int bytesRead, bytesAvailable, bufferSize;
-            byte[] buffer;
-            int maxBufferSize = 1 * 1024 * 1024;
-            File selectedFile = new File(selectedFilePath);
-
-
-            String[] parts = selectedFilePath.split("/");
-            final String fileName = parts[parts.length - 1];
-
-            if (!selectedFile.isFile()) {
-                //dialog.dismiss();
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        System.out.println("Source File Doesn't Exist: " + selectedFilePath);
-                    }
-                });
-                return 0;
-            } else {
-                try {
-                    FileInputStream fileInputStream = new FileInputStream(selectedFile);
-                    URL url = new URL(url_to_upload);
-                    connection = (HttpURLConnection) url.openConnection();
-                    connection.setDoInput(true);//Allow Inputs
-                    connection.setDoOutput(true);//Allow Outputs
-                    connection.setUseCaches(false);//Don't use a cached Copy
-                    connection.setRequestMethod("POST");
-                    connection.setRequestProperty("Connection", "Keep-Alive");
-                    connection.setRequestProperty("ENCTYPE", "multipart/form-data");
-                    connection.setRequestProperty(
-                            "Content-Type", "multipart/form-data;boundary=" + boundary);
-                    connection.setRequestProperty("uploaded_file",upload_file.getAbsolutePath());
-
-
-                    //creating new dataoutputstream
-                    dataOutputStream = new DataOutputStream(connection.getOutputStream());
-
-                    //writing bytes to data outputstream
-                    dataOutputStream.writeBytes(twoHyphens + boundary + lineEnd);
-                    dataOutputStream.writeBytes("Content-Disposition: form-data; name=\"uploaded_file\";filename=\""
-                            + filename + "\"" + lineEnd);
-
-                    dataOutputStream.writeBytes(lineEnd);
-
-                    //returns no. of bytes present in fileInputStream
-                    bytesAvailable = fileInputStream.available();
-                    //selecting the buffer size as minimum of available bytes or 1 MB
-                    bufferSize = Math.min(bytesAvailable, maxBufferSize);
-                    //setting the buffer as byte array of size of bufferSize
-                    buffer = new byte[bufferSize];
-
-                    //reads bytes from FileInputStream(from 0th index of buffer to buffersize)
-                    bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-                    long totalSize = selectedFile.length();
-                    long totalRead = 0;
-                    //loop repeats till bytesRead = -1, i.e., no bytes are left to read
-
-                    //TODO add fileuploadlistener
-                    while (bytesRead > 0) {
-
-                        try {
-
-                            //write the bytes read from inputstream
-                            dataOutputStream.write(buffer, 0, bufferSize);
-
-                            totalRead += bytesRead;
-                            int percentage = (int) ((totalRead / (float) totalSize) * 100);
-                            //outputStream.write(buffer, 0, bytesRead);
-
-                            long now = System.currentTimeMillis();
-
-                            Log.e("", totalRead + " " + " " + percentage);
-                            //this.listener.onUpdateProgress(percentage, totalRead);
-                        } catch (OutOfMemoryError e) {
-                            Toast.makeText(UploadManagerActivity.this, "Insufficient Memory!", Toast.LENGTH_SHORT).show();
-                        }
-                        bytesAvailable = fileInputStream.available();
-                        bufferSize = Math.min(bytesAvailable, maxBufferSize);
-                        bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-                    }
-
-                    dataOutputStream.writeBytes(lineEnd);
-                    dataOutputStream.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
-
-                    try{
-                        serverResponseCode = connection.getResponseCode();
-                    }catch (OutOfMemoryError e){
-                        Toast.makeText(UploadManagerActivity.this, "Memory Insufficient!", Toast.LENGTH_SHORT).show();
-                    }
-                    String serverResponseMessage = connection.getResponseMessage();
-
-                    Log.i("jjjjj", "Server Response is: " + serverResponseMessage + ": " + serverResponseCode);
-
-                    //response code of 200 indicates the server status OK
-                    if (serverResponseCode == 200) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                System.out.println("File Upload completed.\n\n You can see the uploaded file here: \n\n" + "http://coderefer.com/extras/uploads/" + fileName);
-                            }
-                        });
-                    }
-
-                    //closing the input and output streams
-                    fileInputStream.close();
-                    dataOutputStream.flush();
-                    dataOutputStream.close();
 
 
 
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(UploadManagerActivity.this, "File Not Found", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(UploadManagerActivity.this, "URL Error!", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(UploadManagerActivity.this, "Cannot Read/Write File", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-                //dialog.dismiss();
-                return serverResponseCode;
-            }
-
-        }
-    }
 }
