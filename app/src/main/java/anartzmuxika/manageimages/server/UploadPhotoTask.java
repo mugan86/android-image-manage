@@ -93,7 +93,7 @@ public class UploadPhotoTask extends AsyncTask<String, Integer, Integer> {
         // UPDATE THE PROGRESS DIALOG
         System.out.println("PROGRESS----------->: " + values[0]);
         if ( values[0] < 100) progressDialog.setMessage(String.valueOf(" (" + values[0] + " %)"));
-        else progressDialog.setMessage("");
+        else progressDialog.setMessage(context.getResources().getString(R.string.image_upload_successfully));
     }
 
     protected void onPostExecute(Integer int_) {
@@ -106,7 +106,7 @@ public class UploadPhotoTask extends AsyncTask<String, Integer, Integer> {
             try
             {
                 Thread.sleep(1000);
-                Toast.makeText(context, context.getString(R.string.image_upload_successfully), Toast.LENGTH_LONG).show();
+                Toast.makeText(context, context.getResources().getString(R.string.image_upload_successfully), Toast.LENGTH_LONG).show();
 
             }
             catch (InterruptedException e)
