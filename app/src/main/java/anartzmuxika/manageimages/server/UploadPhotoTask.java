@@ -4,10 +4,12 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.widget.Toast;
 
 import java.io.File;
 
 import anartzmuxika.manageimages.FileUploadListener;
+import anartzmuxika.manageimages.R;
 
 /***************************************************************************************************
  * Created by anartzmugika on 22/8/16 / Updated 10/02/2017
@@ -90,20 +92,34 @@ public class UploadPhotoTask extends AsyncTask<String, Integer, Integer> {
 
         // UPDATE THE PROGRESS DIALOG
         System.out.println("PROGRESS----------->: " + values[0]);
-        progressDialog.setMessage(String.valueOf(" (" + values[0] + " %)"));
+        if ( values[0] < 100) progressDialog.setMessage(String.valueOf(" (" + values[0] + " %)"));
+        else progressDialog.setMessage("");
     }
 
     protected void onPostExecute(Integer int_) {
         // TODO: check this.exception
         // TODO: do something with the feed
-        System.out.println("SERVER RETURN: " + int_);
-        try {
-            this.progressDialog.setMessage("Finish!!");
-            Thread.sleep(1000);
-            this.progressDialog.dismiss();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+
+        if (int_ == 200)
+        {
+            System.out.println("SERVER RETURN: " + int_);
+            try
+            {
+                Thread.sleep(1000);
+                Toast.makeText(context, context.getString(R.string.image_upload_successfully), Toast.LENGTH_LONG).show();
+
+            }
+            catch (InterruptedException e)
+            {
+                e.printStackTrace();
+            }
         }
+        else
+        {
+            Toast.makeText(context, context.getString(R.string.image_upload_no_correct), Toast.LENGTH_LONG).show();
+        }
+        this.progressDialog.dismiss();
+
     }
 
 
