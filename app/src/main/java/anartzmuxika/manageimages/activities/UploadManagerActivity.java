@@ -448,10 +448,4 @@ public class UploadManagerActivity extends AppCompatActivity {
         intent.putExtra(Intent.EXTRA_SUBJECT, subject);
         if (intent.resolveActivity(getPackageManager()) != null) { startActivity(intent);}
     }
-
-
-
-
-
-
 }
