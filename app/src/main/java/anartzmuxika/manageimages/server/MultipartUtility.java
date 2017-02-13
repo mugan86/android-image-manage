@@ -47,7 +47,7 @@ class MultipartUtility
 
         int bytesRead, bytesAvailable, bufferSize;
         byte[] buffer;
-        int maxBufferSize = 1 * 1024 * 1024;
+        int maxBufferSize = 1024 * 1024;
         File selectedFile = new File(selectedFilePath);
 
 
@@ -144,7 +144,7 @@ class MultipartUtility
                     ((Activity)context).runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            System.out.println("File Upload completed.\n\n You can see the uploaded file here: \n\n" + "http://coderefer.com/extras/uploads/" + fileName);
+                            System.out.println("File Upload completed.---->" + fileName);
                         }
                     });
                 }
