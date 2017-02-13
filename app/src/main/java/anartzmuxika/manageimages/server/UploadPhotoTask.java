@@ -97,8 +97,6 @@ public class UploadPhotoTask extends AsyncTask<String, Integer, Integer> {
     }
 
     protected void onPostExecute(Integer int_) {
-        // TODO: check this.exception
-        // TODO: do something with the feed
 
         if (int_ == 200)
         {
