@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <string name="profile_photo_str">Subir foto del perfil</string>
     <string name="action_settings">Configuración</string>
     <string name="app_name">Administrar imágenes</string>
     <string name="explain_text">Texto que servirá para explicar el propósito de la siguiente libreria</string>

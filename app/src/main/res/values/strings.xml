@@ -5,6 +5,8 @@
 
     <string name="explain_text">Text to explain library functions</string>
 
+    <string name="profile_photo_str">Upload profile photo</string>
+
     <!-- Camera / Directory and Dialogs texts options-->
     <string name="title_select_option_image">Select image from device or take photo</string>
     <string name="camera_label">Photo Camera</string>

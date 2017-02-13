@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="profile_photo_str">Profil irudia igo</string>
     <string name="action_settings">Konfigurazioa</string>
     <string name="app_name">Irudiak kudeatu</string>
     <string name="explain_text">Liburutegi honek zer egiten duen azaltzeko testua</string>

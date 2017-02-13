@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <string name="profile_photo_str">Upload profile photo</string>
     <string name="action_settings">Configuració</string>
     <string name="app_name">Administrar imatges</string>
     <string name="explain_text">Text to explain library functions</string>
